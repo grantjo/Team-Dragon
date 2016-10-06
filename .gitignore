@@ -1,0 +1,10 @@
+# Exclude common tex files
+**/Report.pdf
+**/Report.log
+**/Report.aux
+**/Report.dtx
+**/Report.toc
+**/Report.lof
+**/Report.out
+**/Report.bbl
+**/Report.blg
