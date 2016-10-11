@@ -12,20 +12,20 @@ Solutions to the maximum sub-array problem. Implementation and analysis of four 
 
 Building Solutions on OSU Flip Server
 
-user included Makefile with the following commands:
+use included Makefile with the following commands:
 
-- make with no arguments will build all solutions
-make
+* make with no arguments will build all solutions
+	* make
 
-- build enumeration.cc named enumeration
-make enumeration
+* build enumeration.cc named enumeration
+	* make enumeration
 
-- build better_enumeration.cc named better_enumeration
-make better_enumeration
+* build better_enumeration.cc named better_enumeration
+	* make better_enumeration
 
-- build divide_and_conquer.cc named divide_and_conquer
-make divide_and_conquer
+* build divide_and_conquer.cc named divide_and_conquer
+	* make divide_and_conquer
 
-make linear_time
--build linear_time.cc named linear_time
+* build linear_time.cc named linear_time
+	* make linear_time
 
