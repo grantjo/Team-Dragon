@@ -1,3 +1,9 @@
 # Exclude common tex files
 **/Report.*
 !**/Report.tex
+
+# Project 1 excludes
+Project1/enumeration
+Project1/better_enumeration
+Project1/divide_and_conquer
+Project1/linear_time
