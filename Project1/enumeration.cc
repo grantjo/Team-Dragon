@@ -166,7 +166,7 @@ void writeToOutput(std::ofstream& out, std::vector<int>& arr, int maxSub[]) {
     if (i + 1 == size)
       out << arr[i];
     else
-      out << arr[i] << ',';
+      out << arr[i] << ", ";
   }
   
   out << "]\n[";									// output closing bracket and opening for subarray
@@ -175,7 +175,7 @@ void writeToOutput(std::ofstream& out, std::vector<int>& arr, int maxSub[]) {
     if (i == maxSub[2])
       out << arr[i];
     else
-      out << arr[i] << ',';
+      out << arr[i] << ", ";
   }
   
   out << "]\n" << maxSub[0] << "\n\n";				// output closing bracket, sum, and padding newlines
@@ -191,9 +191,9 @@ void writeToOutput(std::ofstream& out, std::vector<int>& arr, int maxSub[]) {
 **				Loop exits when getline receives an eof signal.
 **********************************************************************************************/
 void parseArray(std::string str, std::vector<int>& arr) {
-	// remove opening and closing brackets
+	// remove opening and closing bracket
 	str.erase(0, 1);
-	str.erase(str.size() - 2, 2);
+	str.erase(str.size() - 1);
 	
 	// initialize stringstreams for whole string and each integer
 	std::stringstream ss(str),
