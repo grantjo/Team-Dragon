@@ -7,21 +7,22 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 #include <string>
 
 #define CAPACITY 20
 
 /// Function Prototypes
-int* MaximumSub(int arr[], int size);
-void writeToOutput(std::ofstream out, int arr[], int maxSub[]);
-int* parseArray(std::string str);
-int* resizeArray(int arr[],  int capacity) ;
+int* MaximumSub(std::vector<int> arr);
+void writeToOutput(std::ofstream out, std::vector<int> arr, int maxSub[]);
+void parseArray(std::string str, std::vector<int>  arr);
+
 
 /// Main Function
 int main(int argc, char** argv)
 {
-	int *arr,
-		 *maxSub;
+	int *maxSub;
+	std::vector<int> array;
 	std::ifstream inputFile;
 	std::ofstream outputFile;
 	std::string fileLine;
@@ -39,49 +40,40 @@ int main(int argc, char** argv)
 		if (fileLine.size() > 2) {
 			fileLine.erase(0, 1);
 			fileLine.erase(fileLine.size() - 1);
-			
-			arr = parseArray(fileLine);
-			//maxSub = MaximumSub(arr);
-		
+			parseArray(fileLine, array);
+			//maxSub = MaximumSub(array);
+			for (int i = 0; i < array.size(); i++)
+				std::cout << array[i] << std::endl;
+			std::cout << std::endl;
 		}
 	}
 
 }
 
 /// Function Implementations
-int* MaximumSub(int arr[]) {
+int* MaximumSub(std::vector<int> arr) {
 	int maxSub = new int[3];
 }
 
-void writeToOutput(std::ofstream out, int arr[], int maxSub[]) {
+void writeToOutput(std::ofstream out, std::vector<int> arr, int maxSub[]) {
 	out << "[";
 	for (int i = 1; i < arr[0]; i++)
 		out << arr[i] << ","
 }
 
-int* parseArray(std::string str) {
-	std::stringstream ss(str);
-	 int *array = new int[CAPACITY],
-			capacity = CAPACITY;
-			
-	for(array[0] = 1; std::getline(ss, array[i], ","); array[0]++) {
-		if (array[0]  >= capacity) {
-			capacity *= 2;
-			array = resizeArray(array, capacity);
-		}
+void parseArray(std::string str, std::vector<int> arr) {
+	std::stringstream ss(str),
+					  ss_temp;
+	std::string s_temp;
+	int i_temp
+	for(int i = 0; std::getline(ss, s_temp, ","); i++) {
+		ss_temp << s_temp;
+		ss_temp >> i_temp;
+		arr.push_back(i_temp);
+		
+		ss_temp.str("");
+		ss_temp.clear();
 	}
 	
-	
-	return array;
 }
 
-int* resizeArray(int arr[], int capacity) {
-	int* newArray = new int[capacity];
-	
-	for (int i = 0; i < arr[0]; i++) {
-		newArray[i] = arr[i];
-	}
-	
-	delete[] arr;
-	return newArray
-}
