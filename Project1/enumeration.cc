@@ -10,8 +10,6 @@
 #include <vector>
 #include <string>
 
-#define CAPACITY 20
-
 /// Function Prototypes
 int* MaximumSub(std::vector<int> arr);
 void writeToOutput(std::ofstream& out, std::vector<int>& arr, int maxSub[]);
