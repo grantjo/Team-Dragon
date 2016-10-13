@@ -19,10 +19,13 @@ better_enumeration:
 	${CXX} ${CXXFLAGS} better_enumeration.cc -o better_enumeration
 	
 divide_and_conquer:
-	${CXX} ${CXXFLAGS} -o divide_and_conquer.cc divide_and_conquer
+	${CXX} ${CXXFLAGS} divide_and_conquer.cc -o divide_and_conquer
 	
 linear_time:
-	${CXX} ${CXXFLAGS} -o linear_time.cc linear_time
+	${CXX} ${CXXFLAGS} linear_time.cc -o linear_time
+
+random:
+	${CXX} ${CXXFLAGS} random.cc -o random
 	
 #prevent the creation of a clean file
 .PHONY: clean
