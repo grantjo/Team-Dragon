@@ -34,7 +34,7 @@
 #include <string>
 #include <chrono>
 
-#define WRITETOFILE 
+//#define WRITETOFILE 
 
 /*********************************************************************************************
 ** Function: 	MaximumSub
@@ -140,7 +140,7 @@ int main(int argc, char** argv)
 			std::vector<int>().swap(array);					// free memory for vector, initialize new vector
 		}
 	}
-	inpuFile.close();
+	inputFile.close();
 	#else
 	std::ofstream outputFile;
 	// open output file, creates file if none exists
