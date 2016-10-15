@@ -8,18 +8,14 @@
 **				MaximumSub(array)
 **					max = array[0], start = 0, end = 0
 **					for i = 0 to n
-**						temp = 0
-**						for j = i to 0
-**                        	for t = j to i
-**								temp = temp + array[t]
-**							endfor
-**							if temp > max
+**						for j = i back toward 0
+**							currSum = 0
+**							for t = j to i
+**                        		sum all values in the range
+**							if currSum > max
 **								max = temp
 **								start = j
 **								end = i
-**							endif
-**						endfor
-**					endfor
 **					return max, start, end
 **			
 **				Overview of Test program			
@@ -44,7 +40,6 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include <string>
 #include <chrono>
 
 //#define WRITETOFILE 
@@ -53,8 +48,8 @@
 ** Function: 	MaximumSub
 ** Paramaters:	reference to vector<int>
 ** Return: 		Array of 3 integers a[0] = max sum, a[1] = sub start index, a[2] = sub end index
-** Description:	Brute Force Maximum Subarray algorithm. Iterates over array and, for every index,
-**					calculates sum from index to 0. 
+** Description:	Brute Force Maximum Subarray algorithm. Iterates over array and, for every pair
+**					of indices, calculate the sum[j..i]
 **				If a new maximum sum is found, it is saved, along with the start/stop indices in
 **					larger array
 **				The final max sum, start/stop indices are returned in an array.
@@ -181,8 +176,8 @@ int main(int argc, char** argv)
 ** Function: 	MaximumSub
 ** Paramaters:	reference to vector<int>
 ** Return: 		Array of 3 integers a[0] = max sum, a[1] = sub start index, a[2] = sub end index
-** Description:	Brute Force Maximum Subarray algorithm. Iterates over array and, for every index,
-**					calculates sum from index to 0. 
+** Description:	Brute Force Maximum Subarray algorithm. Iterates over array and, for every pair
+**					of indices, calculate the sum[j..i]
 **				If a new maximum sum is found, it is saved, along with the start/stop indices in
 **					larger array
 **				The final max sum, start/stop indices are returned in an array.
