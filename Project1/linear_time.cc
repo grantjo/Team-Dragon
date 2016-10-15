@@ -140,49 +140,27 @@ int main(int argc, char** argv)
 **				The final max sum, start/stop indices are returned in an array.
 **********************************************************************************************/
 int* MaximumSub(std::vector<int>& arr) {
-    int *maxSub = new int[3],			// create 3 integer array
-            size = arr.size();
-    maxSub[0] = 0;					// initial values for maxSub
+    int *maxSub = new int[3],			            // create 3 integer array
+    size = arr.size();
+    maxSub[0] = std::numeric_limits<int>::min();	// initial values for maxSub
     maxSub[1] = 0;
     maxSub[2] = 0;
-    int midSum = 0;                    // tracks sum from the previous loop
-    int currSum = 0;
-    int oldMax = 0;
+    int endingHereSum = 0;
+    int endingHereHigh = 0;
+    int endingHereLow = 0;
 
-    for (int i = 0; i < size; i++) {
-        oldMax = maxSub[0];
-        int tempSum = 0;
-        currSum = midSum + arr[i];
-        if (currSum > 0) {
-            maxSub[0] = maxSub[0] + currSum;
-            maxSub[2] = i;
-
-            if (abs(midSum) < oldMax){      // Do we need a new beginning for maxSub?
-                int oldStart = maxSub[1];
-                for (int j = i; j >= oldStart; j--) {  // there will be a new maxSub
-                    tempSum += arr[j];
-                    if (tempSum > maxSub[0]) {    // maxSub found, update information
-                        maxSub[0] = tempSum;
-                        maxSub[1] = j;
-                    }
-                }
-            } else if (arr[i] > oldMax) {
-                maxSub[0] = arr[i];
-                maxSub[1] = i;
-                maxSub[2] = i;
-                midSum = 0;
-            }
-
-            midSum = 0;     // there are no more intervening indices
-
-        } else if (arr[i] > oldMax) {
-            maxSub[0] = arr[i];
-            maxSub[1] = i;
-            maxSub[2] = i;
-            midSum = 0;
+    for (int j = 0; j < size; j++) {
+        endingHereHigh = j;                         // top of a max sub-array at current index
+        if (endingHereSum  > 0) {
+            endingHereSum  = endingHereSum  + arr[j];
+        } else {
+            endingHereLow = j;              // new potential bottom of the current max sub-array
+            endingHereSum  = arr[j];        // new potential maximum sub-array sum
         }
-        else {
-            midSum = currSum;
+        if (endingHereSum  > maxSub[0]) {   // is the current max sum > the one tracked?
+            maxSub[0] = endingHereSum ;     // if so, replace the stored one
+            maxSub[1] = endingHereLow;      // set new tracking indices to the current sub-array
+            maxSub[2] = endingHereHigh;
         }
     }
     return maxSub;
