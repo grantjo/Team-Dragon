@@ -36,6 +36,19 @@
 
 //#define WRITETOFILE 
 
+struct node {
+	int max;
+	int first;
+	int last;
+	
+	node(int m, int f, int l)
+	{
+		max = m;
+		first = f;
+		last = l;
+	}
+};
+
 /*********************************************************************************************
 ** Function: 	MaximumSub
 ** Paramaters:	reference to vector<int>
@@ -85,20 +98,6 @@ void writeToConsole(std::vector<int>& arr, int maxSub[], long nanoseconds);
 **				Loop exits when getline receives an eof signal.
 **********************************************************************************************/
 void parseArray(std::string str, std::vector<int>&  arr);
-
-struct node {
-	int max;
-	int first;
-	int last;
-	
-	node(int m, int f, int l)
-	{
-		max = m;
-		first = f;
-		last = l;
-	}
-}
-
 
 /// Main Function
 int main(int argc, char** argv)
@@ -199,63 +198,55 @@ int main(int argc, char** argv)
 **				The final max sum, start/stop indices are returned in an array.
 **********************************************************************************************/
 node MaximumSub(std::vector<int>& arr, int first, int last) {
-	if (first == last) {
-		node n(arr[first], first, first);
-		return  node;
+  if (first == last) {
+		node n(arr[first], first, last);
+		return n;
 	}
 	
 	int middle = (first + last) / 2;
 	
-	node left = MaximumSub(arr, 0, middle, maxSub);
-	node right = MaximumSub(arr, middle + 1, last, maxSub);
+	node left = MaximumSub(arr, 0, middle);
+	node right = MaximumSub(arr, middle + 1, last);
 	
 	int leftMax = arr[middle];
-    int rightMax = arr[middle+1];
+  int rightMax = arr[middle+1];
 	node curr(0, 0, 0);
 	
-    int temp = 0;
-    for(int i = middle; i >= first; i--) {
-        temp += arr[i];
-        if(temp > leftMax) {
+  int temp = 0;
+  for(int i = middle; i >= first; i--) {
+    temp += arr[i];
+    if(temp > leftMax) {
 			leftMax = temp;
 			curr.first = i;
 		}
-    }
+  }
 	
-    temp = 0;
-    for(int i = middle + 1; i <= last; i++) {
-        temp += arr[i];
-        if(temp > rightMax) {
+  temp = 0;
+  for(int i = middle + 1; i <= last; i++) {
+    temp += arr[i];
+    if(temp > rightMax) {
 			rightMax = temp;
 			curr.last = i;
 		}
-    }
+  }
 	
 	curr.max = leftMax + rightMax;
-	
-	
-	if (left.max > right.max){
-		if (left.max > curr.max) {
-			return left;
-		}
-		else {
-			return curr;
-		}
-	}
-	
-	else {
-		if (right.max > curr.max) {
-			return right;
-		}
-		else {
-			return curr;
-		}
-	}
+		
+	if (left.max > right.max) 
+  {
+    if (left.max > curr.max)
+      return left;
+    else 
+      return curr;
+  }
+  else 
+  {
+    if (right.max > curr.max)
+      return right;
+    else 
+      return curr;
+  }
 }
-
-
-
-
 
 
 /*********************************************************************************************
