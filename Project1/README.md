@@ -30,18 +30,18 @@ use included Makefile with the following commands:
 
 Preprocessor Definitions:
 
-*There is a single preprocessor definition that will modify the runtime of the program.
+* There is a single preprocessor definition that will modify the runtime of the program.
 
-	*\#define WRITETOFILE
+	#define WRITETOFILE
 
-*if WRITETOFILE is defined the program will read the arrays from an inputfile and write the output to an output file 
+* if WRITETOFILE is defined the program will read the arrays from an inputfile and write the output to an output file 
 
-*if WRITETOFILE is not defined the program will read the arrays from an inputfile and write the output to the console along with the time it took to run each call to MaximumSub in nanoseconds.
+* if WRITETOFILE is not defined the program will read the arrays from an inputfile and write the output to the console along with the time it took to run each call to MaximumSub in nanoseconds.
 
 
 Running The Programs, command line arguments:
 
-*If WRITETOFILE is defined the program will expect the first argument to be the name of the inputfile and the second to be the name of the output file
-*If WRITETOFILE is commented the program expects a single argument for the name of the inputfile.
+* If WRITETOFILE is defined the program will expect the first argument to be the name of the inputfile and the second to be the name of the output file
+* If WRITETOFILE is commented the program expects a single argument for the name of the inputfile.
 
 
