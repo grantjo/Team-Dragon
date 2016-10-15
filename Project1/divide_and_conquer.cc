@@ -36,18 +36,6 @@
 
 //#define WRITETOFILE 
 
-struct node {
-	int max;
-	int first;
-	int last;
-	
-	node(int m, int f, int l)
-	{
-		max = m;
-		first = f;
-		last = l;
-	}
-};
 
 /*********************************************************************************************
 ** Function: 	MaximumSub
@@ -59,7 +47,8 @@ struct node {
 **					larger array
 **				The final max sum, start/stop indices are returned in an array.
 **********************************************************************************************/
-node MaximumSub(std::vector<int>& arr, int first, int last);
+int MaximumSub(std::vector<int>& arr, int first, int last, int* maxSub);
+int MaxSubCross(std::vector<int>& arr, int first, int middle, int last, int* maxSub);
 
 /*********************************************************************************************
 ** Function: 	writeToOutput
@@ -141,13 +130,9 @@ int main(int argc, char** argv)
 			parseArray(fileLine, array);
 			int* maxSub = new int[3];		
 			auto begin = std::chrono::high_resolution_clock::now();
-			node max = MaximumSub(array, 0, array.size() - 1);
+			maxSub[0] = MaximumSub(array, 0, array.size() - 1, maxSub);
 			auto endd = std::chrono::high_resolution_clock::now();
 			long elapsed = (long)std::chrono::duration_cast<std::chrono::nanoseconds>(endd - begin).count();
-			
-			maxSub[0] = max.max;
-			maxSub[1] = max.first;
-			maxSub[2] = max.last;
 			
 		    writeToConsole(array, maxSub, elapsed);
 			
@@ -168,11 +153,7 @@ int main(int argc, char** argv)
 			parseArray(fileLine, array);
 			int* maxSub = new int[3];		
 			
-			node max = MaximumSub(array, 0, array.size() - 1);
-		  
-			maxSub[0] = max.max;
-			maxSub[1] = max.first;
-			maxSub[2] = max.last;
+			maxSub[0] = MaximumSub(array, 0, array.size() - 1, maxSub);
 			
 			writeToOutput(outputFile, array, maxSub); 
       
@@ -197,27 +178,43 @@ int main(int argc, char** argv)
 **					larger array
 **				The final max sum, start/stop indices are returned in an array.
 **********************************************************************************************/
-node MaximumSub(std::vector<int>& arr, int first, int last) {
-  if (first == last) {
-		node n(arr[first], first, last);
-		return n;
-	}
+node MaximumSub(std::vector<int>& arr, int first, int last, int* maxSub) {
+  if (first == last) 
+		return arr[first];
 	
 	int middle = (first + last) / 2;
 	
-	node left = MaximumSub(arr, 0, middle);
-	node right = MaximumSub(arr, middle + 1, last);
-	
+	int left = MaximumSub(arr, 0, middle, maxSub);
+	int right = MaximumSub(arr, middle + 1, last, maxSub);
+	maxSub[0] = MaxSubCross(arr, first, middle, last, maxSub);
+		
+	if (left > right) 
+  {
+    if (left > maxSub[0])
+      return left;
+    else 
+      return maxSub[0];
+  }
+  else 
+  {
+    if (right > maxSub[0])
+      return right;
+    else 
+      return maxSub[0];
+  }
+}
+
+int MaxSubCross(std::vector<int>& arr, int first, int middle, int last, int* maxSub)
+{
 	int leftMax = arr[middle];
-  int rightMax = arr[middle+1];
-	node curr(0, 0, 0);
+   int rightMax = arr[middle+1];
 	
   int temp = 0;
   for(int i = middle; i >= first; i--) {
     temp += arr[i];
     if(temp > leftMax) {
 			leftMax = temp;
-			curr.first = i;
+			maxSub[1] = i;
 		}
   }
 	
@@ -226,28 +223,12 @@ node MaximumSub(std::vector<int>& arr, int first, int last) {
     temp += arr[i];
     if(temp > rightMax) {
 			rightMax = temp;
-			curr.last = i;
+			maxSub[2] = i;
 		}
   }
 	
-	curr.max = leftMax + rightMax;
-		
-	if (left.max > right.max) 
-  {
-    if (left.max > curr.max)
-      return left;
-    else 
-      return curr;
-  }
-  else 
-  {
-    if (right.max > curr.max)
-      return right;
-    else 
-      return curr;
-  }
+	return leftMax + rightMax;
 }
-
 
 /*********************************************************************************************
 ** Function: 	writeToOutput
