@@ -47,6 +47,7 @@
 **				The final max sum, start/stop indices are returned in an array.
 **********************************************************************************************/
 int MaximumSub(std::vector<int>& arr, int first, int last, int* maxSub);
+int helper_max(int left, int right);
 
 /*********************************************************************************************
 ** Function: 	writeToOutput
@@ -105,7 +106,6 @@ int main(int argc, char** argv)
 	std::string outputFileName = argv[2];
 	#endif
 	
-	int *maxSub;				// to hold values for maximum subarray
 	std::vector<int> array;		//STL container for array
 	
 	std::ifstream inputFile;	// file IO
@@ -128,9 +128,9 @@ int main(int argc, char** argv)
 		
 		if (fileLine.size() > 2) {							//check if array is not empty ([])		
 			parseArray(fileLine, array);
-			
+	    int* maxSub = new int[3];		
 			auto begin = std::chrono::high_resolution_clock::now();
-			MaximumSub(array, 0, array.size() - 1, maxSub);
+			maxSub[0] = MaximumSub(array, 0, array.size() - 1, maxSub);
 			auto endd = std::chrono::high_resolution_clock::now();
 			long elapsed = (long)std::chrono::duration_cast<std::chrono::nanoseconds>(endd - begin).count();
 			
@@ -141,6 +141,7 @@ int main(int argc, char** argv)
 		}
 	}
 	inputFile.close();
+  return 0;
 	#else
 	std::ofstream outputFile;
 	// open output file, creates file if none exists
@@ -150,8 +151,9 @@ int main(int argc, char** argv)
 		
 		if (fileLine.size() > 2) {							//check if array is not empty ([])		
 			parseArray(fileLine, array);
+	    int* maxSub = new int[3];		
 			
-			maxSub = MaximumSub(array, 0, array.size() - 1);
+			maxSub[0] = MaximumSub(array, 0, array.size() - 1, maxSub);
 		  
 			writeToOutput(outputFile, array, maxSub); 
       
@@ -161,6 +163,7 @@ int main(int argc, char** argv)
 	}
 	inputFile.close();										//close files
 	outputFile.close();
+  return 0;
 	#endif
 }
 
@@ -203,10 +206,10 @@ int MaximumSub(std::vector<int>& arr, int first, int last, int* maxSub) {
     }
 	
 	leftMax += rightMax;
-	int left = MaximumSub(arr, 0, middle);
-	int right = MaximumSub(arr, middle + 1, last);
+	int left = MaximumSub(arr, 0, middle, maxSub);
+	int right = MaximumSub(arr, middle + 1, last, maxSub);
 	
-	return helper_max(helper_max(left, right), combo);
+	return helper_max(helper_max(left, right), leftMax);
 }
 
 int helper_max(int left, int right) {
