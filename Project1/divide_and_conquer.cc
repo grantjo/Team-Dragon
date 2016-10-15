@@ -46,7 +46,7 @@
 **					larger array
 **				The final max sum, start/stop indices are returned in an array.
 **********************************************************************************************/
-int MaximumSub(std::vector<int>& arr, int first, int last, int* maxSub);
+node MaximumSub(std::vector<int>& arr, int first, int last);
 
 /*********************************************************************************************
 ** Function: 	writeToOutput
@@ -86,6 +86,19 @@ void writeToConsole(std::vector<int>& arr, int maxSub[], long nanoseconds);
 **********************************************************************************************/
 void parseArray(std::string str, std::vector<int>&  arr);
 
+struct node {
+	int max;
+	int first;
+	int last;
+	
+	node(int m, int f, int l)
+	{
+		max = m;
+		first = f;
+		last = l;
+	}
+}
+
 
 /// Main Function
 int main(int argc, char** argv)
@@ -105,7 +118,6 @@ int main(int argc, char** argv)
 	std::string outputFileName = argv[2];
 	#endif
 	
-	int *maxSub;				// to hold values for maximum subarray
 	std::vector<int> array;		//STL container for array
 	
 	std::ifstream inputFile;	// file IO
@@ -128,11 +140,15 @@ int main(int argc, char** argv)
 		
 		if (fileLine.size() > 2) {							//check if array is not empty ([])		
 			parseArray(fileLine, array);
-			
+			int* maxSub = new int[3];		
 			auto begin = std::chrono::high_resolution_clock::now();
-			MaximumSub(array, 0, array.size() - 1, maxSub);
+			node max = MaximumSub(array, 0, array.size() - 1);
 			auto endd = std::chrono::high_resolution_clock::now();
 			long elapsed = (long)std::chrono::duration_cast<std::chrono::nanoseconds>(endd - begin).count();
+			
+			maxSub[0] = max.max;
+			maxSub[1] = max.first;
+			maxSub[2] = max.last;
 			
 		    writeToConsole(array, maxSub, elapsed);
 			
@@ -141,6 +157,7 @@ int main(int argc, char** argv)
 		}
 	}
 	inputFile.close();
+  return 0;
 	#else
 	std::ofstream outputFile;
 	// open output file, creates file if none exists
@@ -150,9 +167,14 @@ int main(int argc, char** argv)
 		
 		if (fileLine.size() > 2) {							//check if array is not empty ([])		
 			parseArray(fileLine, array);
+			int* maxSub = new int[3];		
 			
-			maxSub = MaximumSub(array, 0, array.size() - 1);
+			node max = MaximumSub(array, 0, array.size() - 1);
 		  
+			maxSub[0] = max.max;
+			maxSub[1] = max.first;
+			maxSub[2] = max.last;
+			
 			writeToOutput(outputFile, array, maxSub); 
       
 			delete[] maxSub;								// free memory for maximum subarray
@@ -161,6 +183,7 @@ int main(int argc, char** argv)
 	}
 	inputFile.close();										//close files
 	outputFile.close();
+  return 0;
 	#endif
 }
 
@@ -175,21 +198,27 @@ int main(int argc, char** argv)
 **					larger array
 **				The final max sum, start/stop indices are returned in an array.
 **********************************************************************************************/
-int MaximumSub(std::vector<int>& arr, int first, int last, int* maxSub) {
+node MaximumSub(std::vector<int>& arr, int first, int last) {
 	if (first == last) {
-		return  arr[first];
+		node n(arr[first], first, first);
+		return  node;
 	}
 	
 	int middle = (first + last) / 2;
+	
+	node left = MaximumSub(arr, 0, middle, maxSub);
+	node right = MaximumSub(arr, middle + 1, last, maxSub);
+	
 	int leftMax = arr[middle];
     int rightMax = arr[middle+1];
+	node curr(0, 0, 0);
 	
     int temp = 0;
     for(int i = middle; i >= first; i--) {
         temp += arr[i];
         if(temp > leftMax) {
 			leftMax = temp;
-			maxSub[1] = i;
+			curr.first = i;
 		}
     }
 	
@@ -198,20 +227,33 @@ int MaximumSub(std::vector<int>& arr, int first, int last, int* maxSub) {
         temp += arr[i];
         if(temp > rightMax) {
 			rightMax = temp;
-			maxSub[2] = i;
+			curr.last = i;
 		}
     }
 	
-	leftMax += rightMax;
-	int left = MaximumSub(arr, 0, middle);
-	int right = MaximumSub(arr, middle + 1, last);
+	curr.max = leftMax + rightMax;
 	
-	return helper_max(helper_max(left, right), combo);
+	
+	if (left.max > right.max){
+		if (left.max > curr.max) {
+			return left;
+		}
+		else {
+			return curr;
+		}
+	}
+	
+	else {
+		if (right.max > curr.max) {
+			return right;
+		}
+		else {
+			return curr;
+		}
+	}
 }
 
-int helper_max(int left, int right) {
-	return (left > right) ? left : right;
-}
+
 
 
 
