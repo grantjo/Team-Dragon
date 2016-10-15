@@ -12,7 +12,7 @@ CXXFLAGS += -Wall
 all: enumeration better_enumeration divide_and_conquer linear_time
 
 #buld individual
-enumertion:  
+enumeration:  
 	${CXX} ${CXXFLAGS} enumeration.cc -o enumeration
 	
 better_enumeration: 
