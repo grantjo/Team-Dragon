@@ -46,7 +46,7 @@
 **					larger array
 **				The final max sum, start/stop indices are returned in an array.
 **********************************************************************************************/
-int* MaximumSub(std::vector<int>& arr, int first, int last);
+int MaximumSub(std::vector<int>& arr, int first, int last, int* maxSub);
 
 /*********************************************************************************************
 ** Function: 	writeToOutput
@@ -130,7 +130,7 @@ int main(int argc, char** argv)
 			parseArray(fileLine, array);
 			
 			auto begin = std::chrono::high_resolution_clock::now();
-			maxSub = MaximumSub(array, 0, array.size() - 1);
+			MaximumSub(array, 0, array.size() - 1, maxSub);
 			auto endd = std::chrono::high_resolution_clock::now();
 			long elapsed = (long)std::chrono::duration_cast<std::chrono::nanoseconds>(endd - begin).count();
 			
@@ -175,19 +175,12 @@ int main(int argc, char** argv)
 **					larger array
 **				The final max sum, start/stop indices are returned in an array.
 **********************************************************************************************/
-int* MaximumSub(std::vector<int>& arr, int first, int last) {
+int MaximumSub(std::vector<int>& arr, int first, int last, int* maxSub) {
 	if (first == last) {
-		int* base = new int[3];
-		base[0] = arr[first];
-		base[1] = first;
-		base[2] = first;
-		return base;
+		return  arr[first];
 	}
-	int middle = (first + last) / 2;
-	int *left = MaximumSub(arr, 0, middle);
-	int *right = MaximumSub(arr, middle + 1, last);
 	
-	int *combo = new int[3];
+	int middle = (first + last) / 2;
 	int leftMax = arr[middle];
     int rightMax = arr[middle+1];
 	
@@ -196,7 +189,7 @@ int* MaximumSub(std::vector<int>& arr, int first, int last) {
         temp += arr[i];
         if(temp > leftMax) {
 			leftMax = temp;
-			combo[1] = i;
+			maxSub[1] = i;
 		}
     }
 	
@@ -205,37 +198,22 @@ int* MaximumSub(std::vector<int>& arr, int first, int last) {
         temp += arr[i];
         if(temp > rightMax) {
 			rightMax = temp;
-			combo[2] = i;
+			maxSub[2] = i;
 		}
     }
 	
-	combo[0] = leftMax + rightMax;
+	leftMax += rightMax;
+	int left = MaximumSub(arr, 0, middle);
+	int right = MaximumSub(arr, middle + 1, last);
 	
-	if (left[0] > right[0]){
-		delete[] right;
-		if (left[0] > combo[0]) {
-			delete[] combo;
-			return left;
-		}
-		else {
-			delete[] left;
-			return combo;
-		}
-		
-	}
-	else {
-		delete[] left;
-		if (right[0] > combo[0])  {
-			delete[] combo;
-			return right;
-		}
-		else {
-			delete[] right;
-			return combo;
-		}
-	}
-	
+	return helper_max(helper_max(left, right), combo);
 }
+
+int helper_max(int left, int right) {
+	return (left > right) ? left : right;
+}
+
+
 
 
 /*********************************************************************************************
