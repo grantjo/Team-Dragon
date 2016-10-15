@@ -10,11 +10,14 @@
 **					for i = 0 to n
 **						temp = 0
 **						for j = i to 0
-**							temp += array[j]
+**                        	for t = j to i
+**								temp = temp + array[t]
+**							endfor
 **							if temp > max
 **								max = temp
 **								start = j
 **								end = i
+**							endif
 **						endfor
 **					endfor
 **					return max, start, end
@@ -133,14 +136,16 @@ int* MaximumSub(std::vector<int>& arr) {
 	maxSub[2] = 0;
 
 	for (int i = 0; i < size; i++) {
-		int tempSum = 0;				
 		for (int j = i; j >= 0; j--) {	// loop back from i to 0
-			tempSum += arr[j];
-			if (tempSum > maxSub[0]) {	// maxSub found, update information
-				maxSub[0] = tempSum;
-				maxSub[1] = j;
-				maxSub[2] = i;
-			}	
+            int currSum = 0;
+			for (int t = j; t <= i; t++) {
+                currSum = currSum + arr[t];
+            }
+            if (currSum > maxSub[0]) {	// maxSub found, update information
+                maxSub[0] = currSum;
+                maxSub[1] = j;
+                maxSub[2] = i;
+            }
 		}
 	}
 	return maxSub;
