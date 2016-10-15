@@ -21,8 +21,9 @@
 **						endfor
 **					endfor
 **					return max, start, end
-**				
+**			
 **				Overview of Test program			
+**			A. When WRITETOFILE is defined
 ** 				1) An array of the form "[a1, a2, a3,..., an]" is read from a file
 ** 				2) The information is parsed into a STL vector using the stringstream class
 ** 				3) The vector is passed to MaximumSub which returns the sum, start index, and stop
@@ -33,6 +34,11 @@
 **					[aj, aj+1, ..., ai-1, ai]
 **					max
 **				5) The process is completed for all arrays in test file
+**	       B. When WRITETOFILE is commented
+**			    1) - 3) are the same
+**				4) The same content is written to the console with the addition of the duration 
+**					of the call to MaximumSub in nanoseconds.
+**			    5) is the same
 ***********************************************************************************************/
 #include <iostream>
 #include <fstream>
@@ -72,7 +78,7 @@ void writeToOutput(std::ofstream& out, std::vector<int>& arr, int maxSub[]);
 ** Function: 	writeToConsole
 ** Paramaters:	reference to vector<int>, pointer to int MaximumSub return values, 
 ** Return: 		void
-** Description:	Outputs the original array, maximum subarray, maximum sum, and time for call to console as follows:
+** Description:	Outputs the original array, maximum subarray, maximum sum, and time(ns) for call to console as follows:
 **				[a1, a2, a3, ..., an]
 **				[aj, aj+1, ..., ai-1, ai] 
 **				max				
@@ -99,12 +105,15 @@ int main(int argc, char** argv)
 {
 	#ifndef WRITETOFILE
 	if (argc < 2) {
+		std::cout << "Expected inputfile name in arg1" << std::endl;
 		return 1;
 	}
 	std::string inputFileName = argv[1];
 	#else
-	if (argc < 3)
+	if (argc < 3) {
+		std::cout << "Expected inputfile name in arg1 and outputfile name in arg2" << std::endl;
 		return 1;
+	}
 	std::string inputFileName = argv[1];
 	std::string outputFileName = argv[2];
 	#endif
@@ -144,7 +153,7 @@ int main(int argc, char** argv)
 			std::vector<int>().swap(array);					// free memory for vector, initialize new vector
 		}
 	}
-	
+	inpuFile.close();
 	#else
 	std::ofstream outputFile;
 	// open output file, creates file if none exists
@@ -237,13 +246,14 @@ void writeToOutput(std::ofstream& out, std::vector<int>& arr, int maxSub[]) {
 }
 
 /*********************************************************************************************
-** Function: 	writeToOutput
-** Paramaters:	reference to ofstream, reference to vector<int>, pointer to MaximumSub return values
+** Function: 	writeToConsole
+** Paramaters:	reference to vector<int>, pointer to int MaximumSub return values, 
 ** Return: 		void
-** Description:	Outputs the original array, maximum subarray, and maximum sum as follows:
+** Description:	Outputs the original array, maximum subarray, maximum sum, and time(ns) for call to console as follows:
 **				[a1, a2, a3, ..., an]
 **				[aj, aj+1, ..., ai-1, ai] 
 **				max				
+** 				Time (ns): <time>
 **
 **				where 0 <= j <= i <= n
 **********************************************************************************************/

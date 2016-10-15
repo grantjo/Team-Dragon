@@ -20,6 +20,7 @@
 **					return max, start, end
 **				
 **				Overview of Test program			
+**			A. When WRITETOFILE is defined
 ** 				1) An array of the form "[a1, a2, a3,..., an]" is read from a file
 ** 				2) The information is parsed into a STL vector using the stringstream class
 ** 				3) The vector is passed to MaximumSub which returns the sum, start index, and stop
@@ -30,12 +31,19 @@
 **					[aj, aj+1, ..., ai-1, ai]
 **					max
 **				5) The process is completed for all arrays in test file
+**	       B. When WRITETOFILE is commented
+**			    1) - 3) are the same
+**				4) The same content is written to the console with the addition of the duration 
+**					of the call to MaximumSub in nanoseconds.
+**			    5) is the same
 ***********************************************************************************************/
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <string>
+
+#define WRITETOFILE 
 
 /*********************************************************************************************
 ** Function: 	MaximumSub
@@ -63,6 +71,20 @@ int* MaximumSub(std::vector<int>& arr);
 void writeToOutput(std::ofstream& out, std::vector<int>& arr, int maxSub[]);
 
 /*********************************************************************************************
+** Function: 	writeToConsole
+** Paramaters:	reference to vector<int>, pointer to int MaximumSub return values, 
+** Return: 		void
+** Description:	Outputs the original array, maximum subarray, maximum sum, and time(ns) for call to console as follows:
+**				[a1, a2, a3, ..., an]
+**				[aj, aj+1, ..., ai-1, ai] 
+**				max				
+** 				Time (ns): <time>
+**
+**				where 0 <= j <= i <= n
+**********************************************************************************************/
+void writeToConsole(std::vector<int>& arr, int maxSub[], long nanoseconds);
+
+/*********************************************************************************************
 ** Function: 	parseArray
 ** Paramaters:	value of array string, reference to empty vector<int>
 ** Return: 		void
@@ -77,26 +99,61 @@ void parseArray(std::string str, std::vector<int>&  arr);
 /// Main Function
 int main(int argc, char** argv)
 {
+	#ifndef WRITETOFILE
+	if (argc < 2) {
+		std::cout << "Expected inputfile name in arg1" << std::endl;
+		return 1;
+	}
+	std::string inputFileName = argv[1];
+	#else
+	if (argc < 3) {
+		std::cout << "Expected inputfile name in arg1 and outputfile name in arg2" << std::endl;
+		return 1;
+	}
+	std::string inputFileName = argv[1];
+	std::string outputFileName = argv[2];
+	#endif
+	
 	int *maxSub;				// to hold values for maximum subarray
 	std::vector<int> array;		//STL container for array
 	
 	std::ifstream inputFile;	// file IO
-	std::ofstream outputFile;
+	
 	
 	std::string fileLine;		// holds string representation of array
 	
 	
 	// open input file
-	inputFile.open("MSS_TestProblems.txt" );
+	inputFile.open(inputFileName);
 	if (inputFile.fail())
     {
 		// Report error and return if file failed to open
         std::cout << "Could not open file" << std::endl; 
         return -1;
     }
+	#ifndef WRITETOFILE
 	
+	while(std::getline(inputFile, fileLine)) { 				//read entire line from file into fileLine, until eof
+		
+		if (fileLine.size() > 2) {							//check if array is not empty ([])		
+			parseArray(fileLine, array);
+			
+			auto begin = std::chrono::high_resolution_clock::now();
+			maxSub = MaximumSub(array);
+			auto endd = std::chrono::high_resolution_clock::now();
+			long elapsed = (long)std::chrono::duration_cast<std::chrono::nanoseconds>(endd - begin).count();
+			
+		    writeToConsole(array, maxSub, elapsed);
+			
+			delete[] maxSub;								// free memory for maximum subarray
+			std::vector<int>().swap(array);					// free memory for vector, initialize new vector
+		}
+	}
+	inpuFile.close();
+	#else
+	std::ofstream outputFile;
 	// open output file, creates file if none exists
-	outputFile.open("MSS_TestResults.txt");
+	outputFile.open(outputFileName);
 	
 	while(std::getline(inputFile, fileLine)) { 				//read entire line from file into fileLine, until eof
 		
@@ -113,6 +170,7 @@ int main(int argc, char** argv)
 	}
 	inputFile.close();										//close files
 	outputFile.close();
+	#endif
 }
 
 /*********************************************************************************************
@@ -179,6 +237,43 @@ void writeToOutput(std::ofstream& out, std::vector<int>& arr, int maxSub[]) {
   }
   
   out << "]\n" << maxSub[0] << "\n\n";				// output closing bracket, sum, and padding newlines
+}
+
+/*********************************************************************************************
+** Function: 	writeToConsole
+** Paramaters:	reference to vector<int>, pointer to int MaximumSub return values, 
+** Return: 		void
+** Description:	Outputs the original array, maximum subarray, maximum sum, and time(ns) for call to console as follows:
+**				[a1, a2, a3, ..., an]
+**				[aj, aj+1, ..., ai-1, ai] 
+**				max				
+** 				Time (ns): <time>
+**
+**				where 0 <= j <= i <= n
+**********************************************************************************************/
+void writeToConsole(std::vector<int>& arr, int maxSub[], long nanoseconds) {
+  int size = arr.size();
+  
+  std::cout << "[";										//output open bracket
+  
+  for(int i = 0; i < size; i++) {					// output original array comma delimited
+    if (i + 1 == size)
+      std::cout << arr[i];
+    else
+      std::cout << arr[i] << ", ";
+  }
+  
+  std::cout << "]\n[";									// output closing bracket and opening for subarray
+  
+  for (int i = maxSub[1]; i <= maxSub[2]; i++) {	// output comma delimited subarray
+    if (i == maxSub[2])
+      std::cout << arr[i];
+    else
+      std::cout << arr[i] << ", ";
+  }
+  
+  // output closing bracket, sum, time, and padding newlines
+  std::cout << "]\n" << maxSub[0] << "\nTime(ns): "<< nanoseconds << "\n\n";		
 }
 
 /*********************************************************************************************
