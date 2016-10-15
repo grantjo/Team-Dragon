@@ -115,26 +115,68 @@ int main(int argc, char** argv)
 **					larger array
 **				The final max sum, start/stop indices are returned in an array.
 **********************************************************************************************/
-int* MaximumSub(std::vector<int>& arr) {
-	int *maxSub = new int[3],			// create 3 integer array
-		size = arr.size();
-	maxSub[0] = arr[0];					// initial values for maxSub
-	maxSub[1] = 0;
-	maxSub[2] = 0;
-
-	for (int i = 0; i < size; i++) {
-		int tempSum = 0;				
-		for (int j = i; j >= 0; j--) {	// loop back from i to 0
-			tempSum += arr[j];
-			if (tempSum > maxSub[0]) {	// maxSub found, update information
-				maxSub[0] = tempSum;
-				maxSub[1] = j;
-				maxSub[2] = i;
-			}	
+int* MaximumSub(std::vector<int>& arr, int first, int last) {
+	if (first == last) {
+		int* base = new int[3];
+		base[0] = arr[first];
+		base[1] = first;
+		base[2] = first;
+		return base;
+	}
+	int middle = (first + last) / 2;
+	int *left = MaximumSub(arr, 0, middle);
+	int *right = MaximumSub(arr, middle + 1, last);
+	
+	int *combo = new int[3];
+	int leftmax = arr[middle];
+    int rightmax = arr[middle+1];
+	
+    int temp = 0;
+    for(int i = middle; i >= first; i--) {
+        temp += A[i];
+        if(temp > leftmax) {
+			leftmax = temp;
+			combo[1] = i;
+		}
+    }
+	
+    temp = 0;
+    for(int i = middle + 1; i <= last; i++) {
+        temp += A[i];
+        if(temp > rightMax) {
+			rightmax = temp;
+			combo[2] = i;
+		}
+    }
+	
+	combo[0] = leftMax + rightMax;
+	
+	if (left[0] > right[0]){
+		delete[] right;
+		if (left[0] > combo[0]) {
+			delete[] combo;
+			return left;
+		}
+		else {
+			delete[] left;
+			return combo;
+		}
+		
+	}
+	else {
+		delete[] left;
+		if (right[0] > combo[0])  {
+			delete[] combo;
+			return right;
+		}
+		else {
+			delete[] right;
+			return combo;
 		}
 	}
-	return maxSub;
+	
 }
+
 
 /*********************************************************************************************
 ** Function: 	writeToOutput
