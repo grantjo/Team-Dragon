@@ -1,3 +1,20 @@
+Skip to content
+This repository
+Search
+Pull requests
+Issues
+Gist
+ @grantjo
+ Watch 1
+  Star 0
+  Fork 0 grantjo/Team-Dragon
+ Code  Issues 0  Pull requests 0  Projects 0  Wiki  Pulse  Graphs  Settings
+Tree: a4460fde08 Find file Copy pathTeam-Dragon/Project1/divide_and_conquer.cc
+a4460fd  2 hours ago
+@grantjo grantjo most recent changes
+1 contributor
+RawBlameHistory     
+359 lines (303 sloc)  11.7 KB
 /**********************************************************************************************
 ** Project 1 - Algorithm 3, Divide and Conquer implementation
 ** Project Group: Team Dragon
@@ -36,6 +53,18 @@
 
 //#define WRITETOFILE 
 
+struct node {
+	int max;
+	int first;
+	int last;
+	
+	node(int m, int f, int l)
+	{
+		max = m;
+		first = f;
+		last = l;
+	}
+};
 
 /*********************************************************************************************
 ** Function: 	MaximumSub
@@ -47,8 +76,7 @@
 **					larger array
 **				The final max sum, start/stop indices are returned in an array.
 **********************************************************************************************/
-int MaximumSub(std::vector<int>& arr, int first, int last, int* maxSub);
-int MaxSubCross(std::vector<int>& arr, int first, int middle, int last, int* maxSub);
+node MaximumSub(std::vector<int>& arr, int first, int last);
 
 /*********************************************************************************************
 ** Function: 	writeToOutput
@@ -130,9 +158,13 @@ int main(int argc, char** argv)
 			parseArray(fileLine, array);
 			int* maxSub = new int[3];		
 			auto begin = std::chrono::high_resolution_clock::now();
-			maxSub[0] = MaximumSub(array, 0, array.size() - 1, maxSub);
+			node max = MaximumSub(array, 0, array.size() - 1);
 			auto endd = std::chrono::high_resolution_clock::now();
 			long elapsed = (long)std::chrono::duration_cast<std::chrono::nanoseconds>(endd - begin).count();
+			
+			maxSub[0] = max.max;
+			maxSub[1] = max.first;
+			maxSub[2] = max.last;
 			
 		    writeToConsole(array, maxSub, elapsed);
 			
@@ -153,7 +185,11 @@ int main(int argc, char** argv)
 			parseArray(fileLine, array);
 			int* maxSub = new int[3];		
 			
-			maxSub[0] = MaximumSub(array, 0, array.size() - 1, maxSub);
+			node max = MaximumSub(array, 0, array.size() - 1);
+		  
+			maxSub[0] = max.max;
+			maxSub[1] = max.first;
+			maxSub[2] = max.last;
 			
 			writeToOutput(outputFile, array, maxSub); 
       
@@ -178,57 +214,57 @@ int main(int argc, char** argv)
 **					larger array
 **				The final max sum, start/stop indices are returned in an array.
 **********************************************************************************************/
-node MaximumSub(std::vector<int>& arr, int first, int last, int* maxSub) {
-  if (first == last) 
-		return arr[first];
+node MaximumSub(std::vector<int>& arr, int first, int last) {
+  if (first == last) {
+		node n(arr[first], first, last);
+		return n;
+	}
 	
 	int middle = (first + last) / 2;
 	
-	int left = MaximumSub(arr, 0, middle, maxSub);
-	int right = MaximumSub(arr, middle + 1, last, maxSub);
-	maxSub[0] = MaxSubCross(arr, first, middle, last, maxSub);
-		
-	if (left > right) 
-  {
-    if (left > maxSub[0])
-      return left;
-    else 
-      return maxSub[0];
-  }
-  else 
-  {
-    if (right > maxSub[0])
-      return right;
-    else 
-      return maxSub[0];
-  }
-}
-
-int MaxSubCross(std::vector<int>& arr, int first, int middle, int last, int* maxSub)
-{
+	node left = MaximumSub(arr, 0, middle);
+	node right = MaximumSub(arr, middle + 1, last);
+	
 	int leftMax = arr[middle];
-   int rightMax = arr[middle+1];
+  int rightMax = arr[middle+1];
+	node curr(0, 0, 0);
 	
   int temp = 0;
   for(int i = middle; i >= first; i--) {
     temp += arr[i];
-    if(temp > leftMax) {
+    if(temp >= leftMax) {
 			leftMax = temp;
-			maxSub[1] = i;
+			curr.first = i;
 		}
   }
 	
   temp = 0;
   for(int i = middle + 1; i <= last; i++) {
     temp += arr[i];
-    if(temp > rightMax) {
+    if(temp >= rightMax) {
 			rightMax = temp;
-			maxSub[2] = i;
+			curr.last = i;
 		}
   }
 	
-	return leftMax + rightMax;
+	curr.max = leftMax + rightMax;
+		
+	if (left.max > right.max) 
+  {
+    if (left.max > curr.max)
+      return left;
+    else 
+      return curr;
+  }
+  else 
+  {
+    if (right.max > curr.max)
+      return right;
+    else 
+      return curr;
+  }
 }
+
 
 /*********************************************************************************************
 ** Function: 	writeToOutput
@@ -337,3 +373,5 @@ void parseArray(std::string str, std::vector<int>& arr) {
 	
 }
 
+Contact GitHub API Training Shop Blog About
+© 2016 GitHub, Inc. Terms Privacy Security Status Help
