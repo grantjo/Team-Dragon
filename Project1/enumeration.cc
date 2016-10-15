@@ -39,8 +39,9 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <chrono>
 
-//#define WRITETOFILE 
+#define WRITETOFILE 
 
 /*********************************************************************************************
 ** Function: 	MaximumSub
@@ -79,7 +80,7 @@ void writeToOutput(std::ofstream& out, std::vector<int>& arr, int maxSub[]);
 **
 **				where 0 <= j <= i <= n
 **********************************************************************************************/
-void writeToConsole(std::vector<int>& arr, int maxSub[], long nanoseconds)
+void writeToConsole(std::vector<int>& arr, int maxSub[], long nanoseconds);
 
 /*********************************************************************************************
 ** Function: 	parseArray
