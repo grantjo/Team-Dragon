@@ -37,7 +37,7 @@
 **					larger array
 **				The final max sum, start/stop indices are returned in an array.
 **********************************************************************************************/
-int* MaximumSub(std::vector<int>& arr);
+int* MaximumSub(std::vector<int>& arr, int first, int last);
 
 /*********************************************************************************************
 ** Function: 	writeToOutput
@@ -93,7 +93,7 @@ int main(int argc, char** argv)
 		if (fileLine.size() > 2) {							//check if array is not empty ([])		
 			parseArray(fileLine, array);
 			
-			maxSub = MaximumSub(array);
+			maxSub = MaximumSub(array, 0, array.size() - 1);
 		  
 			writeToOutput(outputFile, array, maxSub); 
       
@@ -128,23 +128,23 @@ int* MaximumSub(std::vector<int>& arr, int first, int last) {
 	int *right = MaximumSub(arr, middle + 1, last);
 	
 	int *combo = new int[3];
-	int leftmax = arr[middle];
-    int rightmax = arr[middle+1];
+	int leftMax = arr[middle];
+    int rightMax = arr[middle+1];
 	
     int temp = 0;
     for(int i = middle; i >= first; i--) {
-        temp += A[i];
-        if(temp > leftmax) {
-			leftmax = temp;
+        temp += arr[i];
+        if(temp > leftMax) {
+			leftMax = temp;
 			combo[1] = i;
 		}
     }
 	
     temp = 0;
     for(int i = middle + 1; i <= last; i++) {
-        temp += A[i];
+        temp += arr[i];
         if(temp > rightMax) {
-			rightmax = temp;
+			rightMax = temp;
 			combo[2] = i;
 		}
     }

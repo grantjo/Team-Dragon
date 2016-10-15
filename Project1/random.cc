@@ -10,7 +10,6 @@ int main(int argc, char** argv)
 {
   if (argc < 2)
     return 0;
-  
   std::mt19937 generator(std::random_device{}());
   std::uniform_int_distribution<int> distribution(-100, 100);
   auto random = std::bind(distribution, generator);
