@@ -12,8 +12,8 @@
 **					
 **					middle = (start + finish) / 2
 **
-**					left = MaximumSub(array, start, middle)
-**					right = MaximumSub(array, middle + 1, finish)
+**					leftMax, leftStart, leftFinish = MaximumSub(array, start, middle)
+**					rightMax, rightStart, rightFinish = MaximumSub(array, middle + 1, finish)
 **
 **					temp = 0
 **					for i = middle to start
@@ -28,10 +28,12 @@
 **						temp += array[i]
 **						if temp > max
 **							crossRight = temp
-**							crossEnd = i
+**							crossFinish = i
 **					endfor
 **
-**					return Maximum([leftMax, leftStart, leftFinish], [rightMax, rightStart, rightFinish], [crossMax, crossStart, crossFinish])
+**					return max([leftMax, leftStart, leftFinish], 
+**									  [rightMax, rightStart, rightFinish], 
+**									  [crossMax, crossStart, crossFinish])
 **				EndMaximumSub
 **				
 **				Overview of Test program			
