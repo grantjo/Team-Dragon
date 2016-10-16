@@ -9,7 +9,7 @@ CXXFLAGS += -Wall
 
 
 #build all
-all: enumeration better_enumeration divide_and_conquer linear_time
+all: enumeration better_enumeration divide_and_conquer linear_time random
 
 #buld individual
 enumeration:  
