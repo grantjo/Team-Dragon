@@ -61,7 +61,7 @@
 #include <string>
 #include <chrono>
 
-//#define WRITETOFILE 
+#define WRITETOFILE 
 
 struct node {
 	int max;
