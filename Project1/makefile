@@ -27,12 +27,21 @@ linear_time:
 random:
 	${CXX} ${CXXFLAGS} random.cc -o random
 	
-#prevent the creation of a clean file
-.PHONY: clean
-
-#remove all extraneous files such as .o and a.out files
-clean:
-	rm -rf *.o a.out
+# Typing 'make clean' calls this build.
+# It's designed to clean up the folder.
+# Be careful with this, edit as needed.
+clean: 
+	rm -f ${PROGS}  *.o *~ a.out
+	
+# Only needed in Windows where the .exe extension is appended
+# to executables. Rather than rm -f *.exe, this leaves in
+# place any other executables that might be present.
+rmexes:
+	rm -f enumeration.exe
+	rm -f better_enumeration.exe
+	rm -f divide_and_conquer.exe
+	rm -f linear_time.exe
+	rm -f random.exe
 	
 
 	
