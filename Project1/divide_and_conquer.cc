@@ -1,20 +1,3 @@
-Skip to content
-This repository
-Search
-Pull requests
-Issues
-Gist
- @grantjo
- Watch 1
-  Star 0
-  Fork 0 grantjo/Team-Dragon
- Code  Issues 0  Pull requests 0  Projects 0  Wiki  Pulse  Graphs  Settings
-Tree: a4460fde08 Find file Copy pathTeam-Dragon/Project1/divide_and_conquer.cc
-a4460fd  2 hours ago
-@grantjo grantjo most recent changes
-1 contributor
-RawBlameHistory     
-359 lines (303 sloc)  11.7 KB
 /**********************************************************************************************
 ** Project 1 - Algorithm 3, Divide and Conquer implementation
 ** Project Group: Team Dragon
@@ -222,7 +205,7 @@ node MaximumSub(std::vector<int>& arr, int first, int last) {
 	
 	int middle = (first + last) / 2;
 	
-	node left = MaximumSub(arr, 0, middle);
+	node left = MaximumSub(arr, first, middle);
 	node right = MaximumSub(arr, middle + 1, last);
 	
 	int leftMax = arr[middle];
@@ -373,5 +356,3 @@ void parseArray(std::string str, std::vector<int>& arr) {
 	
 }
 
-Contact GitHub API Training Shop Blog About
-© 2016 GitHub, Inc. Terms Privacy Security Status Help
