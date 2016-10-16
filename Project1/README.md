@@ -13,7 +13,9 @@ __Preprocessor Definitions:__
 
 * There is a single preprocessor definition that will modify the input and output of the programs
 
+	```c++
 	#define WRITETOFILE
+	```
 
 * if WRITETOFILE is defined the program will read the arrays from an inputfile and write the output to an output file 
 
