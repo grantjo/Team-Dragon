@@ -51,9 +51,9 @@ use included Makefile with the following commands:
 
 * If WRITETOFILE is defined the program will expect the first argument to be the name of the inputfile and the second to be the name of the output file
 
-example enumeration on flip:
-make enumeration
-enumeration MSS_TestProblems.txt MSS_TestResults.txt
+example enumeration on flip:  
+make enumeration  
+enumeration MSS_TestProblems.txt MSS_TestResults.txt  
 
 * If WRITETOFILE is commented the program expects a single argument for the name of the inputfile.
 
