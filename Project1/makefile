@@ -7,7 +7,7 @@ CXXFLAGS += -g
 CXXFLAGS += -pedantic-errors
 CXXFLAGS += -Wall
 
-
+PROGS = enumeration better_enumeration divide_and_conquer linear_time random
 #build all
 all: enumeration better_enumeration divide_and_conquer linear_time random
 
