@@ -7,22 +7,26 @@
 **
 **				MaximumSub(array)
 **					max = array[0], start = 0, end = 0
-**                  size = array.length
-**                  max[0] = integer minimum value
-**                  endingHereSum = 0
+**                  	size = array.length
+**                  	max[0] = integer minimum value
+**                  	endingHereSum = 0
 **					for j = 0 to n
 **						endingHereHigh = j
-**							temp += array[j]
-**							if endingHereSum  > 0
+**						temp += array[j]
+**						if endingHereSum  > 0
 **                              endingHereSum  = endingHereSum  + arr[j];
-**                          else
+**                        else
 **                              endingHereLow = j;
 **                              endingHereSum  = arr[j];
-**                          if endingHereSum  > maxSub[0]
+**						endif
+**                         if endingHereSum  > maxSub[0]
 **                              maxSub[0] = endingHereSum;
 **                              maxSub[1] = endingHereLow;
 **                              maxSub[2] = endingHereHigh;
+**						endif
+**					endfor
 **					return max, start, end
+**				end MaximumSub
 **
 **				Overview of Test program
 ** 				1) An array of the form "[a1, a2, a3,..., an]" is read from a file
@@ -48,10 +52,7 @@
 ** Function: 	MaximumSub
 ** Paramaters:	reference to vector<int>
 ** Return: 		Array of 3 integers a[0] = max sum, a[1] = sub start index, a[2] = sub end index
-** Description:	Brute Force Maximum Subarray algorithm. Iterates over array and, for every pair
-**					of indices, calculate the sum[j..i]
-**				If a new maximum sum is found, it is saved, along with the start/stop indices in
-**					larger array
+** Description: Algorithm that uses Dynamic Programming to find the Maximum Subarray
 **				The final max sum, start/stop indices are returned in an array.
 **********************************************************************************************/
 int* MaximumSub(std::vector<int>& arr);
@@ -100,17 +101,17 @@ int main(int argc, char** argv)
 {
 #ifndef WRITETOFILE
     if (argc < 2) {
-        std::cout << "Expected inputfile name in arg1" << std::endl;
-        return 1;
+	   std::cout << "Expected inputfile name in arg1" << std::endl;
+	   return 1;
     }
     std::string inputFileName = argv[1];
 #else
     if (argc < 3) {
-		std::cout << "Expected inputfile name in arg1 and outputfile name in arg2" << std::endl;
-		return 1;
-	}
-	std::string inputFileName = argv[1];
-	std::string outputFileName = argv[2];
+	   std::cout << "Expected inputfile name in arg1 and outputfile name in arg2" << std::endl;
+	   return 1;
+    }
+    std::string inputFileName = argv[1];
+    std::string outputFileName = argv[2];
 #endif
 
     int *maxSub;				// to hold values for maximum subarray
@@ -126,49 +127,49 @@ int main(int argc, char** argv)
     inputFile.open(inputFileName);
     if (inputFile.fail())
     {
-        // Report error and return if file failed to open
-        std::cout << "Could not open file" << std::endl;
-        return -1;
+	   // Report error and return if file failed to open
+	   std::cout << "Could not open file" << std::endl;
+	   return -1;
     }
 #ifndef WRITETOFILE
 
-    while(std::getline(inputFile, fileLine)) { 				//read entire line from file into fileLine, until eof
+    while (std::getline(inputFile, fileLine)) { 				//read entire line from file into fileLine, until eof
 
-        if (fileLine.size() > 2) {							//check if array is not empty ([])
-            parseArray(fileLine, array);
+	   if (fileLine.size() > 2) {							//check if array is not empty ([])
+		  parseArray(fileLine, array);
 
-            auto begin = std::chrono::high_resolution_clock::now();
-            maxSub = MaximumSub(array);
-            auto endd = std::chrono::high_resolution_clock::now();
-            long elapsed = (long)std::chrono::duration_cast<std::chrono::nanoseconds>(endd - begin).count();
+		  auto begin = std::chrono::high_resolution_clock::now();
+		  maxSub = MaximumSub(array);
+		  auto endd = std::chrono::high_resolution_clock::now();
+		  long elapsed = (long)std::chrono::duration_cast<std::chrono::nanoseconds>(endd - begin).count();
 
-            writeToConsole(array, maxSub, elapsed);
+		  writeToConsole(array, maxSub, elapsed);
 
-            delete[] maxSub;								// free memory for maximum subarray
-            std::vector<int>().swap(array);					// free memory for vector, initialize new vector
-        }
+		  delete[] maxSub;								// free memory for maximum subarray
+		  std::vector<int>().swap(array);					// free memory for vector, initialize new vector
+	   }
     }
     inputFile.close();
 #else
     std::ofstream outputFile;
-	// open output file, creates file if none exists
-	outputFile.open(outputFileName);
+    // open output file, creates file if none exists
+    outputFile.open(outputFileName);
 
-	while(std::getline(inputFile, fileLine)) { 				//read entire line from file into fileLine, until eof
+    while (std::getline(inputFile, fileLine)) { 				//read entire line from file into fileLine, until eof
 
-		if (fileLine.size() > 2) {							//check if array is not empty ([])
-			parseArray(fileLine, array);
+	   if (fileLine.size() > 2) {							//check if array is not empty ([])
+		  parseArray(fileLine, array);
 
-			maxSub = MaximumSub(array);
+		  maxSub = MaximumSub(array);
 
-			writeToOutput(outputFile, array, maxSub);
+		  writeToOutput(outputFile, array, maxSub);
 
-			delete[] maxSub;								// free memory for maximum subarray
-			std::vector<int>().swap(array);					// free memory for vector, initialize new vector
-		}
-	}
-	inputFile.close();										//close files
-	outputFile.close();
+		  delete[] maxSub;								// free memory for maximum subarray
+		  std::vector<int>().swap(array);					// free memory for vector, initialize new vector
+	   }
+    }
+    inputFile.close();										//close files
+    outputFile.close();
 #endif
 }
 
@@ -176,13 +177,12 @@ int main(int argc, char** argv)
 ** Function: 	MaximumSub
 ** Paramaters:	reference to vector<int>
 ** Return: 		Array of 3 integers a[0] = max sum, a[1] = sub start index, a[2] = sub end index
-** Description:	Determines maximum subarray of A[1..j+1] by tracking the maximum subarray
-**                  ending a index j.
+** Description: Algorithm that uses Dynamic Programming to find the Maximum Subarray
 **				The final max sum, start/stop indices are returned in an array.
 **********************************************************************************************/
 int* MaximumSub(std::vector<int>& arr) {
     int *maxSub = new int[3],			            // create 3 integer array
-    size = arr.size();
+	   size = arr.size();
     maxSub[0] = std::numeric_limits<int>::min();	// initial values for maxSub
     maxSub[1] = 0;
     maxSub[2] = 0;
@@ -191,18 +191,19 @@ int* MaximumSub(std::vector<int>& arr) {
     int endingHereLow = 0;
 
     for (int j = 0; j < size; j++) {
-        endingHereHigh = j;                         // top of a max sub-array at current index
-        if (endingHereSum  > 0) {
-            endingHereSum  = endingHereSum  + arr[j];
-        } else {
-            endingHereLow = j;              // new potential bottom of the current max sub-array
-            endingHereSum  = arr[j];        // new potential maximum sub-array sum
-        }
-        if (endingHereSum  > maxSub[0]) {   // is the current max sum > the one tracked?
-            maxSub[0] = endingHereSum;     // if so, replace the stored one
-            maxSub[1] = endingHereLow;      // set new tracking indices to the current sub-array
-            maxSub[2] = endingHereHigh;
-        }
+	   endingHereHigh = j;                         // top of a max sub-array at current index
+	   if (endingHereSum > 0) {
+		  endingHereSum = endingHereSum + arr[j];
+	   }
+	   else {
+		  endingHereLow = j;              // new potential bottom of the current max sub-array
+		  endingHereSum = arr[j];        // new potential maximum sub-array sum
+	   }
+	   if (endingHereSum > maxSub[0]) {   // is the current max sum > the one tracked?
+		  maxSub[0] = endingHereSum;     // if so, replace the stored one
+		  maxSub[1] = endingHereLow;      // set new tracking indices to the current sub-array
+		  maxSub[2] = endingHereHigh;
+	   }
     }
     return maxSub;
 }
@@ -224,20 +225,20 @@ void writeToOutput(std::ofstream& out, std::vector<int>& arr, int maxSub[]) {
 
     out << "[";										//output open bracket
 
-    for(int i = 0; i < size; i++) {					// output original array comma delimited
-        if (i + 1 == size)
-            out << arr[i];
-        else
-            out << arr[i] << ", ";
+    for (int i = 0; i < size; i++) {					// output original array comma delimited
+	   if (i + 1 == size)
+		  out << arr[i];
+	   else
+		  out << arr[i] << ", ";
     }
 
     out << "]\n[";									// output closing bracket and opening for subarray
 
     for (int i = maxSub[1]; i <= maxSub[2]; i++) {	// output comma delimited subarray
-        if (i == maxSub[2])
-            out << arr[i];
-        else
-            out << arr[i] << ", ";
+	   if (i == maxSub[2])
+		  out << arr[i];
+	   else
+		  out << arr[i] << ", ";
     }
 
     out << "]\n" << maxSub[0] << "\n\n";				// output closing bracket, sum, and padding newlines
@@ -260,24 +261,24 @@ void writeToConsole(std::vector<int>& arr, int maxSub[], long nanoseconds) {
 
     std::cout << "[";										//output open bracket
 
-    for(int i = 0; i < size; i++) {					// output original array comma delimited
-        if (i + 1 == size)
-            std::cout << arr[i];
-        else
-            std::cout << arr[i] << ", ";
+    for (int i = 0; i < size; i++) {					// output original array comma delimited
+	   if (i + 1 == size)
+		  std::cout << arr[i];
+	   else
+		  std::cout << arr[i] << ", ";
     }
 
     std::cout << "]\n[";									// output closing bracket and opening for subarray
 
     for (int i = maxSub[1]; i <= maxSub[2]; i++) {	// output comma delimited subarray
-        if (i == maxSub[2])
-            std::cout << arr[i];
-        else
-            std::cout << arr[i] << ", ";
+	   if (i == maxSub[2])
+		  std::cout << arr[i];
+	   else
+		  std::cout << arr[i] << ", ";
     }
 
     // output closing bracket, sum, time, and padding newlines
-    std::cout << "]\n" << maxSub[0] << "\nTime(ns): "<< nanoseconds << "\n\n";
+    std::cout << "]\n" << maxSub[0] << "\nTime(ns): " << nanoseconds << "\n\n";
 }
 
 /*********************************************************************************************
@@ -296,21 +297,21 @@ void parseArray(std::string str, std::vector<int>& arr) {
 
     // initialize stringstreams for whole string and each integer
     std::stringstream ss(str),
-            ss_temp;
+	   ss_temp;
 
     // temperary storage for each value in array
     std::string s_temp;
     int i_temp;
 
-    while(std::getline(ss, s_temp, ',')) {			// get each comma delimited value
-        ss_temp << s_temp;							// read into string
-        ss_temp >> i_temp;							// write out to int
+    while (std::getline(ss, s_temp, ',')) {			// get each comma delimited value
+	   ss_temp << s_temp;							// read into string
+	   ss_temp >> i_temp;							// write out to int
 
-        arr.push_back(i_temp);						// push onto vector
+	   arr.push_back(i_temp);						// push onto vector
 
-        // reset ss_temp for next value
-        ss_temp.str("");
-        ss_temp.clear();
+	   // reset ss_temp for next value
+	   ss_temp.str("");
+	   ss_temp.clear();
     }
 
 }
