@@ -9,7 +9,7 @@ Solutions to the maximum sub-array problem. Implementation and analysis of four 
 3. Divide and Conquer
 4. Linear Time (Dynamic Programming)
 
-__Preprocessor Definitions:__
+###Preprocessor Definitions:
 
 * There is a single preprocessor definition that will modify the input and output of the programs
 
@@ -22,7 +22,7 @@ __Preprocessor Definitions:__
 * if WRITETOFILE is not defined the program will read the arrays from an inputfile and write the output to the console along with the time it took to run each call to MaximumSub in nanoseconds.
 
 
-__Building Solutions on OSU Flip Server:__
+###Building Solutions on OSU Flip Server:
 
 
 use included Makefile with the following commands:
@@ -47,7 +47,7 @@ use included Makefile with the following commands:
 
 
 
-__Running The Programs, command line arguments:__
+###Running The Programs, command line arguments:
 
 * If WRITETOFILE is defined the program will expect the first argument to be the name of the inputfile and the second to be the name of the output file
 
@@ -57,8 +57,8 @@ enumeration MSS_TestProblems.txt MSS_TestResults.txt
 
 * If WRITETOFILE is commented the program expects a single argument for the name of the inputfile.
 
-example enumeration on flip:
-make enumeration
-enumeration MSS_TestProblems.txt 
+example enumeration on flip:  
+make enumeration  
+enumeration MSS_TestProblems.txt   
 
 
