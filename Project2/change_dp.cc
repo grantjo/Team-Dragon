@@ -31,7 +31,9 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <vector>
 
+#define WRITETOFILE
 
 /*********************************************************************************************
 ** Function: 	makeChange
@@ -82,7 +84,7 @@ void writeToConsole(std::vector<int>& coinsUsed, int minCoins,int change, long n
 **				onto vector. 
 **				Loop exits when getline receives an eof signal.
 **********************************************************************************************/
-void parsecoinsUseday(std::string str, std::vector<int>&  coinValues);
+void parseArray(std::string str, std::vector<int>&  coinValues);
 
 /**  Simple function to check is string is only whitespace **/
 bool only_space(const std::string &str);
@@ -132,9 +134,9 @@ int main(int argc, char** argv)
 		
 			toInt >> iChange;
 		
-			std::vector<int> coinsUsed[iChange + 1];
-			std::vector<int> numCoins[iChange + 1];
 		
+			std::vector<int> coinsUsed(iChange + 1);
+			std::vector<int> numCoins(iChange + 1);
 				
 			parseArray(fileLine, coinValues);
 			
@@ -165,15 +167,14 @@ int main(int argc, char** argv)
 		
 			toInt >> iChange;
 		
-			std::vector<int> coinsUsed[iChange + 1];
-			std::vector<int> numCoins[iChange + 1];
-		
+			std::vector<int> coinsUsed(iChange + 1);
+			std::vector<int> numCoins(iChange + 1);
 			
 			parseArray(fileLine, coinValues);
 			
 			int minCoins = makeChange(coinValues, iChange, numCoins, coinsUsed);
 		  
-			writeToOutput(outputFile, coinValues, minCoins, iChange); 
+			writeToOutput(outputFile, coinsUsed, minCoins, iChange); 
  
 			std::vector<int>().swap(coinValues);					// free memory for vector, initialize new vector
 		}
@@ -194,7 +195,7 @@ int main(int argc, char** argv)
 **              and a buffer that holds the last coin used at each value. This second buffer can be 
 **              used to work back to the actual coins used.
 **********************************************************************************************/
-int makeChange(std::vector<int>& coinValues, int change, std::vector<int>& numCoins, std::vector<int>& coinsUsed)
+int makeChange(std::vector<int>& coinValues, int change, std::vector<int>& numCoins, std::vector<int>& usedCoins)
 {
 	int outerSize = numCoins.size() + 1;
 	int innerSize = coinValues.size();
@@ -203,7 +204,7 @@ int makeChange(std::vector<int>& coinValues, int change, std::vector<int>& numCo
 	{
 		int currentNum = i;
 		int used = 1;
-		for (int j = 0; j < innerSize)
+		for (int j = 0; j < innerSize; j++)
 		{
 			if (coinValues[j] <= i){
 				if(numCoins[i - coinValues[j]] + 1 < currentNum)
@@ -235,13 +236,12 @@ int makeChange(std::vector<int>& coinValues, int change, std::vector<int>& numCo
 **				where 0 <= j <= i <= n
 **********************************************************************************************/
 void writeToOutput(std::ofstream& out, std::vector<int>& coinsUsed, int minCoins, int change) {
-  int size = coinsUsed.size();
-  int coin = change
+  int coin = change;
   out << "[";										//output open bracket
   
-  for(int i = 0; i < size; i++) {					// output original coinsUseday comma delimited
+  for(int i = 0; i < minCoins; i++) {					// output original coinsUseday comma delimited
 	int current = coinsUsed[coin];
-    if (i + 1 == size)
+    if (i + 1 == minCoins)
       out << current;
     else
       out << current << ", ";
@@ -264,17 +264,16 @@ void writeToOutput(std::ofstream& out, std::vector<int>& coinsUsed, int minCoins
 **				where 0 <= j <= i <= n
 **********************************************************************************************/
 void writeToConsole(std::vector<int>& coinsUsed, int minCoins, int change, long nanoseconds) {
-  int size = coinsUsed.size();
   int coin = change;
   
   std::cout << "[";										//output open bracket
   
-  for(int i = 0; i < size; i++) {					// output original coinsUseday comma delimited
+  for(int i = 0; i < minCoins; i++) {					// output original coinsUseday comma delimited
 	int current = coinsUsed[coin];
-    if (i + 1 == size)
-      out << current;
+    if (i + 1 == minCoins)
+      std::cout << current;
     else
-      out << current << ", ";
+     std::cout << current << ", ";
 	coin -= current;
   }
   
@@ -284,7 +283,7 @@ void writeToConsole(std::vector<int>& coinsUsed, int minCoins, int change, long 
 }
 
 /*********************************************************************************************
-** Function: 	parsecoinsUseday
+** Function: 	parseArray
 ** Paramaters:	value of coinsUseday string, reference to empty vector<int>
 ** Return: 		void
 ** Description:	string is read into a stream, which is parsed by comma delimited getline calls.
@@ -292,7 +291,7 @@ void writeToConsole(std::vector<int>& coinsUsed, int minCoins, int change, long 
 **				onto vector. 
 **				Loop exits when getline receives an eof signal.
 **********************************************************************************************/
-void parsecoinsUseday(std::string str, std::vector<int>& coinValues) {
+void parseArray(std::string str, std::vector<int>& coinValues) {
 	// remove opening and closing bracket
 	str.erase(0, 1);
 	str.erase(str.size() - 1);
@@ -323,7 +322,7 @@ bool only_space(const std::string &str)
 {
     for (std::string::const_iterator it = str.begin(); it != str.end(); it++)
     {
-		if (*it == "\t")
+		if (*it == '\t')
 			continue;
         else if (*it != ' ') 
 			return false;

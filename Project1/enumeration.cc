@@ -42,7 +42,7 @@
 #include <vector>
 #include <chrono>
 
-#define WRITETOFILE 
+//#define WRITETOFILE 
 
 /*********************************************************************************************
 ** Function: 	MaximumSub

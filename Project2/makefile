@@ -7,22 +7,19 @@ CXXFLAGS += -g
 CXXFLAGS += -pedantic-errors
 CXXFLAGS += -Wall
 
-PROGS = enumeration better_enumeration divide_and_conquer linear_time random
+PROGS = change_slow change_dp change_greedy
 #build all
-all: enumeration better_enumeration divide_and_conquer linear_time random
+all: change_slow change_dp change_greedy
 
 #buld individual
-enumeration:  
-	${CXX} ${CXXFLAGS} enumeration.cc -o enumeration
+change_slow:  
+	${CXX} ${CXXFLAGS} change_slow.cc -o change_slow
 	
-better_enumeration: 
-	${CXX} ${CXXFLAGS} better_enumeration.cc -o better_enumeration
+change_dp: 
+	${CXX} ${CXXFLAGS} change_dp.cc -o change_dp
 	
-divide_and_conquer:
-	${CXX} ${CXXFLAGS} divide_and_conquer.cc -o divide_and_conquer
-	
-linear_time:
-	${CXX} ${CXXFLAGS} linear_time.cc -o linear_time
+change_greedy:
+	${CXX} ${CXXFLAGS} change_greedy -o change_greedy
 
 random:
 	${CXX} ${CXXFLAGS} random.cc -o random
@@ -37,10 +34,9 @@ clean:
 # to executables. Rather than rm -f *.exe, this leaves in
 # place any other executables that might be present.
 rmexes:
-	rm -f enumeration.exe
-	rm -f better_enumeration.exe
-	rm -f divide_and_conquer.exe
-	rm -f linear_time.exe
+	rm -f change_slow.exe
+	rm -f change_dp.exe
+	rm -f change_greedy.exe
 	rm -f random.exe
 	
 

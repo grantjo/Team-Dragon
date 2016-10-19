@@ -1,10 +1,23 @@
 # Exclude common tex files
 **/Report.*
 !**/Report.tex
+**/random
 
 # Project 1 excludes
 Project1/enumeration
 Project1/better_enumeration
 Project1/divide_and_conquer
 Project1/linear_time
-Project1/random
+Project1/enumeration.exe
+Project1/better_enumeration.exe
+Project1/divide_and_conquer.exe
+Project1/linear_time.exe
+
+# Project 2 excludes
+
+Project2/change_slow
+Project2/change_dp
+Project2/change_greedy
+Project2/change_slow.exe
+Project2/change_dp.exe
+Project2/change_greedy.exe
