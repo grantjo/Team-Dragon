@@ -59,7 +59,7 @@ int makeChange(std::vector<int>& coinValues, int change, std::vector<int>& numCo
 **
 **				where 0 <= j <= i <= n
 **********************************************************************************************/
-void writeToOutput(std::ofstream& out, std::vector<int>& coinsUsed, int minCoins, int change);
+void writeToOutput(std::ofstream& out, std::vector<int>& coinsUsed, int minCoins);
 
 /*********************************************************************************************
 ** Function: 	writeToConsole
@@ -73,7 +73,7 @@ void writeToOutput(std::ofstream& out, std::vector<int>& coinsUsed, int minCoins
 **
 **				where 0 <= j <= i <= n
 **********************************************************************************************/
-void writeToConsole(std::vector<int>& coinsUsed, int minCoins,int change, long nanoseconds);
+void writeToConsole(std::vector<int>& coinsUsed, int minCoins, long nanoseconds);
 
 /*********************************************************************************************
 ** Function: 	parsecoinsUseday
@@ -86,6 +86,7 @@ void writeToConsole(std::vector<int>& coinsUsed, int minCoins,int change, long n
 **********************************************************************************************/
 void parseArray(std::string str, std::vector<int>&  coinValues);
 
+int vectorFind(std::vector<int>& vector, int val); 
 /**  Simple function to check is string is only whitespace **/
 bool only_space(const std::string &str);
 
@@ -144,8 +145,17 @@ int main(int argc, char** argv)
 			int minCoins = makeChange(coinValues, iChange, numCoins, coinsUsed);
 			auto endd = std::chrono::high_resolution_clock::now();
 			long elapsed = (long)std::chrono::duration_cast<std::chrono::nanoseconds>(endd - begin).count();
+		  
+      std::vector<int> outputCoins(coinValues.size(), 0);
+      int coin = iChange;
+      while (coin > 0) {
+        int index = vectorFind(coinValues, coinsUsed[coin]);
+        if (index != -1)
+          outputCoins.at(index)++;
+          coin -= coinsUsed[coin];
+      } 
 			
-		    writeToConsole(coinsUsed, minCoins, iChange, elapsed);
+		  writeToConsole(outputCoins, minCoins, elapsed);
 
 			std::vector<int>().swap(coinValues);			// free memory for vector, initialize new vector
 		}
@@ -173,8 +183,15 @@ int main(int argc, char** argv)
 			parseArray(fileLine, coinValues);
 			
 			int minCoins = makeChange(coinValues, iChange, numCoins, coinsUsed);
-		  
-			writeToOutput(outputFile, coinsUsed, minCoins, iChange); 
+		  std::vector<int> outputCoins(coinValues.size(), 0);
+      int coin = iChange;
+      while (coin > 0) {
+        int index = vectorFind(coinValues, coinsUsed[coin]);
+        if (index != -1)
+          outputCoins.at(index)++;
+          coin -= coinsUsed[coin];
+      } 
+			writeToOutput(outputFile, outputCoins, minCoins); 
  
 			std::vector<int>().swap(coinValues);					// free memory for vector, initialize new vector
 		}
@@ -235,17 +252,15 @@ int makeChange(std::vector<int>& coinValues, int change, std::vector<int>& numCo
 **
 **				where 0 <= j <= i <= n
 **********************************************************************************************/
-void writeToOutput(std::ofstream& out, std::vector<int>& coinsUsed, int minCoins, int change) {
-  int coin = change;
+void writeToOutput(std::ofstream& out, std::vector<int>& coinsUsed, int minCoins) {
+  int size = coinsUsed.size();
   out << "[";										//output open bracket
   
-  for(int i = 0; i < minCoins; i++) {					// output original coinsUseday comma delimited
-	int current = coinsUsed[coin];
-    if (i + 1 == minCoins)
-      out << current;
+  for(int i = 0; i < size; i++) {					// output original coinsUseday comma delimited
+    if (i + 1 == size)
+      out << coinsUsed[i];
     else
-      out << current << ", ";
-	coin -= current;
+      out << coinsUsed[i] << ", ";
   }
  
   out << "]\n" << minCoins << "\n\n";				// output closing bracket, sum, and padding newlines
@@ -263,18 +278,15 @@ void writeToOutput(std::ofstream& out, std::vector<int>& coinsUsed, int minCoins
 **
 **				where 0 <= j <= i <= n
 **********************************************************************************************/
-void writeToConsole(std::vector<int>& coinsUsed, int minCoins, int change, long nanoseconds) {
-  int coin = change;
-  
+void writeToConsole(std::vector<int>& coinsUsed, int minCoins, long nanoseconds) {
+  int size = coinsUsed.size(); 
   std::cout << "[";										//output open bracket
   
-  for(int i = 0; i < minCoins; i++) {					// output original coinsUseday comma delimited
-	int current = coinsUsed[coin];
-    if (i + 1 == minCoins)
-      std::cout << current;
+  for(int i = 0; i < size; i++) {					// output original coinsUseday comma delimited
+    if (i + 1 == size)
+      std::cout << coinsUsed[i];
     else
-     std::cout << current << ", ";
-	coin -= current;
+     std::cout << coinsUsed[i] << ", ";
   }
   
   
@@ -315,6 +327,18 @@ void parseArray(std::string str, std::vector<int>& coinValues) {
 		ss_temp.clear();
 	}
 	
+}
+
+/** Simple find function for vectors, returns index if found and -1 if not  **/
+int vectorFind(std::vector<int>& vector, int val) 
+{
+  int size = vector.size();
+
+  for (int i = 0; i < size; i++) {
+    if (vector[i] == val)
+      return i;
+  }
+  return -1;
 }
 
 /**  Simple function to check is string is only whitespace **/
