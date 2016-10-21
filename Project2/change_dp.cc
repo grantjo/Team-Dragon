@@ -46,7 +46,7 @@
 **              and a buffer that holds the last coin used at each value. This second buffer can be
 **              used to work back to the actual coins used.
 **********************************************************************************************/
-int makeChange(std::vector<int>& coinValues, int change, std::vector<int>& numCoins, std::vector<int>& coinsUsed);
+int makeChange(std::vector<int>& coinValues, int change, int* numCoins, int* coinsUsed);
 
 /*********************************************************************************************
 ** Function: 	writeToOutput
@@ -126,27 +126,25 @@ int main(int argc, char** argv)
 #ifndef WRITETOFILE
 
     while (std::getline(inputFile, fileLine)) { 				//read entire line from file into fileLine, until eof
-	   if (!only_space(fileLine)) {							//check if array is not empty ([])
+	   if (!only_space(fileLine)) {							//check if line is whitespace
 		  std::string sChange = "";
-		  int iChange;
 
 		  std::getline(inputFile, sChange);
 		  std::vector<int> changeAmount;
 		  parseArray(sChange, changeAmount);
+      
+      parseArray(fileLine, coinValues);
 		  
 		  int size = changeAmount.size();
 
 		  for (int i = 0; i < size; i++) {
-			 std::vector<int> coinsUsed(changeAmount[i] + 1);
-			 std::vector<int> numCoins(changeAmount[i] + 1);
-
-			 parseArray(fileLine, coinValues);
+       int *coinsUsed = new int[changeAmount[i] + 1];
+       int *numCoins = new int[changeAmount[i] + 1];
 
 			 auto begin = std::chrono::high_resolution_clock::now();
 			 int minCoins = makeChange(coinValues, changeAmount[i], numCoins, coinsUsed);
 			 auto endd = std::chrono::high_resolution_clock::now();
 			 long elapsed = (long)std::chrono::duration_cast<std::chrono::nanoseconds>(endd - begin).count();
-
 			 std::vector<int> outputCoins(coinValues.size(), 0);
 			 int coin = changeAmount[i];
 			 while (coin > 0) {
@@ -154,11 +152,12 @@ int main(int argc, char** argv)
 				if (index != -1)
 				    outputCoins.at(index)++;
 				coin -= coinsUsed[coin];
+
 			 }
-
 			 writeToConsole(outputCoins, minCoins, elapsed);
+       delete[] numCoins;
+       delete[] coinsUsed;
 		  }
-
 		  std::vector<int>().swap(coinValues);			// free memory for vector, initialize new vector
 	   }
     }
@@ -179,8 +178,8 @@ int main(int argc, char** argv)
 
 		  toInt >> iChange;
 
-		  std::vector<int> coinsUsed(iChange + 1);
-		  std::vector<int> numCoins(iChange + 1);
+      int* coinsUsed = new int[iChange + 1];
+      int* numCoins = new int[iChange + 1];
 
 		  parseArray(fileLine, coinValues);
 
@@ -194,6 +193,8 @@ int main(int argc, char** argv)
 			 coin -= coinsUsed[coin];
 		  }
 		  writeToOutput(outputFile, outputCoins, minCoins);
+      delete[] numCoins;
+      delete[] coinsUsed;
 
 		  std::vector<int>().swap(coinValues);					// free memory for vector, initialize new vector
 	   }
@@ -214,9 +215,9 @@ int main(int argc, char** argv)
 **              and a buffer that holds the last coin used at each value. This second buffer can be
 **              used to work back to the actual coins used.
 **********************************************************************************************/
-int makeChange(std::vector<int>& coinValues, int change, std::vector<int>& numCoins, std::vector<int>& usedCoins)
+int makeChange(std::vector<int>& coinValues, int change, int* numCoins, int* usedCoins)
 {
-    int outerSize = numCoins.size() + 1;
+    int outerSize = change + 1;
     int innerSize = coinValues.size();
 
     for (int i = 0; i < outerSize; i++)
