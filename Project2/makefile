@@ -20,9 +20,6 @@ change_dp:
 	
 change_greedy:
 	${CXX} ${CXXFLAGS} change_greedy -o change_greedy
-
-random:
-	${CXX} ${CXXFLAGS} random.cc -o random
 	
 # Typing 'make clean' calls this build.
 # It's designed to clean up the folder.
@@ -37,7 +34,6 @@ rmexes:
 	rm -f change_slow.exe
 	rm -f change_dp.exe
 	rm -f change_greedy.exe
-	rm -f random.exe
 	
 
 	
