@@ -132,14 +132,14 @@ int main(int argc, char** argv)
 		  std::getline(inputFile, sChange);
 		  std::vector<int> changeAmount;
 		  parseArray(sChange, changeAmount);
-      
-      parseArray(fileLine, coinValues);
-		  
+
+		  parseArray(fileLine, coinValues);
+
 		  int size = changeAmount.size();
 
 		  for (int i = 0; i < size; i++) {
-       int *coinsUsed = new int[changeAmount[i] + 1];
-       int *numCoins = new int[changeAmount[i] + 1];
+			 int *coinsUsed = new int[changeAmount[i] + 1];
+			 int *numCoins = new int[changeAmount[i] + 1];
 
 			 auto begin = std::chrono::high_resolution_clock::now();
 			 int minCoins = makeChange(coinValues, changeAmount[i], numCoins, coinsUsed);
@@ -155,8 +155,8 @@ int main(int argc, char** argv)
 
 			 }
 			 writeToConsole(outputCoins, minCoins, elapsed);
-       delete[] numCoins;
-       delete[] coinsUsed;
+			 delete[] numCoins;
+			 delete[] coinsUsed;
 		  }
 		  std::vector<int>().swap(coinValues);			// free memory for vector, initialize new vector
 	   }
@@ -178,8 +178,8 @@ int main(int argc, char** argv)
 
 		  toInt >> iChange;
 
-      int* coinsUsed = new int[iChange + 1];
-      int* numCoins = new int[iChange + 1];
+		  int* coinsUsed = new int[iChange + 1];
+		  int* numCoins = new int[iChange + 1];
 
 		  parseArray(fileLine, coinValues);
 
@@ -193,8 +193,8 @@ int main(int argc, char** argv)
 			 coin -= coinsUsed[coin];
 		  }
 		  writeToOutput(outputFile, outputCoins, minCoins);
-      delete[] numCoins;
-      delete[] coinsUsed;
+		  delete[] numCoins;
+		  delete[] coinsUsed;
 
 		  std::vector<int>().swap(coinValues);					// free memory for vector, initialize new vector
 	   }
