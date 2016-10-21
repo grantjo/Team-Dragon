@@ -61,7 +61,7 @@ enumeration Coin1.txt Coin1Change.txt
 	```
 
 example change_slow on flip:  
-make change_slow 
+make change_slow  
 change_slow report Q3.txt 
 
 
