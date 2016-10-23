@@ -19,7 +19,7 @@ change_dp:
 	${CXX} ${CXXFLAGS} change_dp.cc -o change_dp
 	
 change_greedy:
-	${CXX} ${CXXFLAGS} change_greedy -o change_greedy
+	${CXX} ${CXXFLAGS} change_greedy.cc -o change_greedy
 	
 # Typing 'make clean' calls this build.
 # It's designed to clean up the folder.
