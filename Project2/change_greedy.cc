@@ -126,26 +126,28 @@ int main(int argc, char** argv)
     while (std::getline(inputFile, fileLine)) { 				//read entire line from file into fileLine, until eof
 	   if (!only_space(fileLine)) {							//check if line is whitespace
 		  std::string sChange = "";
-		  int iChange;
+		  //int iChange;
 
 		  std::getline(inputFile, sChange);
-		  std::stringstream toInt(sChange);
-
-          toInt >> iChange;
+          std::vector<int> changeAmount;
+		  parseArray(sChange, changeAmount);
 
 		  parseArray(fileLine, coinValues);
 
-		  std::vector<int> outputCoins(coinValues.size(), 0); //store the coins actually used
+          int size = changeAmount.size();
 
-		  int size = outputCoins.size();
+          for (int i = 0; i < size; i++) {
+              std::vector<int> outputCoins(coinValues.size(), 0); //store the coins actually used
 
-		  auto begin = std::chrono::high_resolution_clock::now();
-          int minCoins = makeChange(coinValues, iChange, outputCoins);
-          auto endd = std::chrono::high_resolution_clock::now();
-          long elapsed = (long)std::chrono::duration_cast<std::chrono::nanoseconds>(endd - begin).count();
+              //int size = outputCoins.size();
 
-          writeToConsole(outputCoins, minCoins, elapsed);
+              auto begin = std::chrono::high_resolution_clock::now();
+              int minCoins = makeChange(coinValues, changeAmount[i], outputCoins);
+              auto endd = std::chrono::high_resolution_clock::now();
+              long elapsed = (long) std::chrono::duration_cast<std::chrono::nanoseconds>(endd - begin).count();
 
+              writeToConsole(outputCoins, minCoins, elapsed);
+          }
 		  std::vector<int>().swap(coinValues);			// free memory for vector, initialize new vector
 	   }
     }
