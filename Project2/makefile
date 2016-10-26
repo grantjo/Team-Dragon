@@ -13,7 +13,7 @@ all: change_slow change_dp change_greedy
 
 #buld individual
 change_slow:  
-	${CXX} ${CXXFLAGS} change_slow.cc -o change_slow
+	${CXX} -std=c++11 change_slow.cc -o change_slow
 	
 change_dp: 
 	${CXX} ${CXXFLAGS} change_dp.cc -o change_dp
