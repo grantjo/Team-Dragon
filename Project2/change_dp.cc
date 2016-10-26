@@ -167,6 +167,8 @@ int main(int argc, char** argv)
     // open output file, creates file if none exists
     outputFile.open(outputFileName);
 
+    outputFile << "Algorithm changedp:\n";    
+
     while (std::getline(inputFile, fileLine)) { 				//read entire line from file into fileLine, until eof
 
 	   if (!only_space(fileLine)) {							//check if array is not whitspace
