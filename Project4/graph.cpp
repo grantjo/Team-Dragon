@@ -30,15 +30,20 @@
 
 #include "graph.h"
 
-class Graph(inFile) {              //Accepts a string as a name for an ifstream
-public:
-    Graph::Graph(inFile) {       //Constructor
-        Matrix myMatrix;
-        std::ifstream iFile;
-    };
+Graph::Graph(std::string inFile) {             //Constructor
+    std::ifstream inputFile;
+    inputFile.open(inFile);
 
-private:
+    if (inputFile.fail()) {
+        // Report error and return if file failed to open
+        std::cout << "Could not open file" << std::endl;
+    }
 
-protected:
+    /*while (std::getline(inputFile, fileLine)) {                //read entire line from file into fileLine, until eof
+        if (!only_space(fileLine)) {
+            parseArray(fileLine, row1_ptr);
+        }
+    }*/
 
-};
+
+}
