@@ -33,6 +33,16 @@ var candidateListSize = 20;
 var mutationRate = 0.015;
 var locationList = [];
 
+locationList.clone = function() {
+	var new_array = [];
+	
+	for (var i = 0; i < this.length; i++) {
+		new_array.push(new location(this[i].name, this[i].x, this[i].y));
+	}
+	
+	return new_array;
+}
+
 if (process.argv.length < 5) {
     console.log("Arguments Needed: input file, size of population, number of generations");
     process.exit(1);
@@ -50,6 +60,8 @@ location.prototype.distanceTo = function (locationB) {
 
     return Math.round(Math.sqrt(x_dist*x_dist + y_dist* y_dist));
 };
+
+
 
 
 
@@ -127,11 +139,13 @@ var population = function(pop_size, init) {
     this.tourList = [];
 
     for (var i = 0; i < pop_size; i++) {
-        if (init) {
+        if (init == 1) {
             var temp_tour = new ind_tour(0);
             temp_tour.random_individual();
             this.tourList.push(temp_tour);
-        } else {
+        } else if (init == 2) {
+			this.tourList.push(nearest_neighbor());
+		}else {
             this.tourList.push(null);
         }
     }
@@ -152,7 +166,7 @@ population.prototype.getFittest = function() {
 
 
 function evolve(pop){
-    var new_pop = new population(pop.tourList.length, false);
+    var new_pop = new population(pop.tourList.length, 0);
 
     new_pop.tourList[0] = pop.getFittest();
 
@@ -231,7 +245,7 @@ function mutate(individual){
 
 // Get a candidate for crossover from pop. This is the fittest of a random selection from pop
 function crossoverCandidate(pop) {
-    var candidatePop = new population(candidateListSize, false);
+    var candidatePop = new population(candidateListSize, 0);
 
     for (var i = 0; i < candidateListSize; i++) {
         var random = Math.round(pop.tourList.length * Math.random()) % pop.tourList.length;
@@ -246,39 +260,38 @@ function crossoverCandidate(pop) {
 // NEAREST NEIGHBOR
 
 function nearest_neighbor() {
-    var current_best = locationList.splice();
+    var nnList = locationList.clone();
+    var tour = new ind_tour(nnList.length);
+	
+    var current = Math.round(Math.random() * nnList.length) % nnList.length;
+    nnList[current].visited = true;
+	var next_index = 0;
+    tour.route[next_index] = nnList[current];
+	next_index++;
+	
+    var dist_to_nn = Number.MAX_VALUE;
+    var nn_index = -1;
 
-    for (var i = 0; i < locationList.length; i+=2) {
-        var nnList = locationList.splice();
-        var current_tour = [];
-        var current = i;
-        nnList[current].visited = true;
-        current_tour.add(nnList[current]);
-        var dist_to_nn = Number.MAX_VALUE;
-        var nn_index = -1
-
-        for (var j = 0; i < nnList.length; j++) {
-            for (var k = 0; k < nnList.length; k++){
-                if (nnList[k].visited == false) {
-                    var temp_dist = nnList[current].distanceTo(nnList[k]);
-                    if (temp_dist < dist_to_nn) {
-                        dist_to_nn = temp_dist;
-                        nn_index = k;
-                    }
+    for (var j = 0; j < nnList.length; j++) {
+        for (var k = 0; k < nnList.length; k++){
+            if (nnList[k].visited == false) {
+                var temp_dist = nnList[current].distanceTo(nnList[k]);
+                if (temp_dist < dist_to_nn) {
+                    dist_to_nn = temp_dist;
+                    nn_index = k;
                 }
             }
-            if (nn_index != -1) {
-                nnList[nn_index].visited = true;
-                current_tour.add(nnList[nn_index]);
-            }
         }
-
-        if (current_best.getDistance() > current_tour.getDistance()) {
-            current_best = current_tour;
+        if (nn_index != -1) {
+            nnList[nn_index].visited = true;
+            tour.route[next_index] = nnList[nn_index];
+			current = nn_index;
+			nn_index = -1;
+			next_index++;
+			dist_to_nn = Number.MAX_VALUE;
         }
-
     }
-
+	return tour;
 }
 
 // MAIN FUNCTION
@@ -305,7 +318,7 @@ function main() {
     }
 
 // create population to start
-    var pop = new population(process.argv[3], true);
+    var pop = new population(process.argv[3], 2);
 
 
     console.log("initial distance: " + pop.getFittest().getDistance());
