@@ -145,11 +145,13 @@ var population = function(pop_size, init) {
             this.tourList.push(temp_tour);
         } else if (init == 2) {
 			this.tourList.push(nearest_neighbor());
+			process.stdout.write("\rSeeded Individual " + (i+1) + " of " + pop_size);
 		}else {
             this.tourList.push(null);
         }
     }
-
+	if (init == 2)
+		console.log();
 };
 
 population.prototype.getFittest = function() {
@@ -313,9 +315,6 @@ function main() {
         locationList.push(temp_location);
     }
 
-    function nn_pop(population_size) {
-
-    }
 
 // create population to start
     var pop = new population(process.argv[3], 2);
@@ -326,8 +325,10 @@ function main() {
     for (var i = 0; i < process.argv[4]; i++) {
         //console.log(pop.tourList);
         pop = evolve(pop);
+		process.stdout.write("\rCompleted Generation " + (i+1) + " of " + process.argv[4]);
     }
-
+	console.log();
+	
     var best = pop.getFittest();
 
     console.log("Finished " + process.argv[4] + " generations");
