@@ -14,6 +14,8 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <cstring>
+#include <string>
 #include <sys/fcntl.h>
 
 #endif //MY_INCLUDES
@@ -21,34 +23,25 @@
 #ifndef PROJECT4_GRAPH_H
 #define PROJECT4_GRAPH_H
 
-struct vertex {
-    int num, xcoor, ycoor;
-};
-
-typedef std::vector<vertex> Row;
-typedef std::vector<Row> Matrix;
 
 class Graph {
 public:
     Graph(std::string);
 
+
+protected:
+    struct vertex {
+        int num;
+        int xcoor;
+        int ycoor;
+    };
+
+    void parseArray(std::ifstream&, const std::string, std::vector<vertex>&);
+
 private:
-    Row row1;
-    Row* row1_ptr = &row1;
-    Matrix myMatrix;
+    std::vector<vertex> Vertices;                   //vector of vertices
+    std::vector<std::vector<int>> Distances;        //2D vector
     std::string fileLine;
 };
-
-/*********************************************************************************************
-** Function: 	parseArray
-** Paramaters:
-** Return: 		void
-        ** Description:	string is read into a stream, which is parsed by comma delimited getline calls.
-**				Each comma delimited string is converted to an int by stringstream, then pushed
-**				onto vector.
-**				Loop exits when getline receives an eof signal.
-**********************************************************************************************/
-//void parseArray(std::string str, Row&);
-
 
 #endif //PROJECT4_GRAPH_H

@@ -32,18 +32,51 @@
 
 Graph::Graph(std::string inFile) {             //Constructor
     std::ifstream inputFile;
+    parseArray(inputFile, inFile, Vertices);
+
+    
+    Distances.push_back()
+}
+
+
+/*********************************************************************************************
+** Function: 	parseArray
+** Paramaters:  a string representing the filename for input
+** Return: 		void
+** Description:	string is read into a stream, which is parsed by comma delimited getline calls.
+**				Each comma delimited string is converted to an int by stringstream, then pushed
+**				onto vector.
+**				Loop exits when getline receives an eof signal.
+**********************************************************************************************/
+void Graph::parseArray(std::ifstream &inputFile, const std::string inFile, std::vector<vertex> &Vertices) {
     inputFile.open(inFile);
 
-    if (inputFile.fail()) {
+    if(!inputFile.is_open()) {
         // Report error and return if file failed to open
         std::cout << "Could not open file" << std::endl;
+        exit(EXIT_FAILURE);
     }
 
-    /*while (std::getline(inputFile, fileLine)) {                //read entire line from file into fileLine, until eof
-        if (!only_space(fileLine)) {
-            parseArray(fileLine, row1_ptr);
-        }
-    }*/
+    std::string fileLine;		                    // holds string representation of array
+    const char delimiter[] = " ";
 
+    while (std::getline(inputFile, fileLine)) {     //read entire line from file into fileLine, until eof
+        int nodeNum, nodeX, nodeY;
+        char * cstr = new char [fileLine.length()+1];
+        std::strcpy(cstr, fileLine.c_str());
+        char * myToken;
 
+        myToken = strtok(cstr, delimiter);
+        nodeNum = atoi(myToken);
+
+        myToken = strtok(NULL, delimiter);
+        nodeX = atoi(myToken);
+
+        myToken = strtok(NULL, delimiter);
+        nodeY = atoi(myToken);
+
+        Vertices.push_back({nodeNum, nodeX, nodeY});
+
+        delete myToken;
+    }
 }
