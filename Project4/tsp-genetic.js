@@ -333,9 +333,29 @@ function main() {
 
     console.log("Finished " + process.argv[4] + " generations");
     console.log("Final Distance: " + best.getDistance());
+	
+	var buffer = best.getDistance().toString();
+	
 
-    for (var i = 0; i < best.route.length; i++)
+    for (var i = 0; i < best.route.length; i++) {
         console.log(best.route[i].name);
+		buffer += "\n" + best.route[i].name;
+	}
+	
+	//buffer = Buffer.from(buffer, 'utf8');
+
+	fs.open(process.argv[2] + ".tour", 'w', function(err, fd) {
+		if (err) {
+			throw 'error opening file: ' + err;
+		}
+
+		fs.write(fd, buffer, 0, buffer.length, null, function(err) {
+			if (err) throw 'error writing file: ' + err;
+			fs.close(fd, function() {
+				console.log('file written');
+			})
+		});
+	});
 }
 
 
