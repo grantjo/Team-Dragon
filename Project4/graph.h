@@ -16,7 +16,8 @@
 #include <vector>
 #include <cstring>
 #include <string>
-#include <sys/fcntl.h>
+#include <limits>
+#include <cmath>
 
 #endif //MY_INCLUDES
 
@@ -37,11 +38,12 @@ protected:
     };
 
     void parseArray(std::ifstream&, const std::string, std::vector<vertex>&);
+    void distMatrix(std::vector<std::vector<int>>&, std::vector<vertex>&);
 
 private:
-    std::vector<vertex> Vertices;                   //vector of vertices
     std::vector<std::vector<int>> Distances;        //2D vector
     std::string fileLine;
+    const int inf = std::numeric_limits<int>::max();
 };
 
 #endif //PROJECT4_GRAPH_H

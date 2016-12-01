@@ -32,10 +32,31 @@
 
 Graph::Graph(std::string inFile) {             //Constructor
     std::ifstream inputFile;
+    std::vector<vertex> Vertices;                   //vector of vertices
+
+    inputFile.open(inFile);
+
+    if(!inputFile.is_open()) {
+        // Report error and return if file failed to open
+        std::cout << "Could not open file" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
     parseArray(inputFile, inFile, Vertices);
 
-    
-    Distances.push_back()
+    unsigned long cols, rows;
+    cols = Vertices.size();
+    rows = Vertices.size();
+    Distances.resize(rows, std::vector<int>(cols));
+
+    //initialize all distances to infinity
+    for(unsigned long row = 0; row < rows; row++){
+        for(unsigned long col = 0; col < cols; col++) {
+            Distances[row][col] = inf;
+        }
+    }
+
+    distMatrix(Distances, Vertices);                      //Calculate correct distances
 }
 
 
@@ -49,13 +70,13 @@ Graph::Graph(std::string inFile) {             //Constructor
 **				Loop exits when getline receives an eof signal.
 **********************************************************************************************/
 void Graph::parseArray(std::ifstream &inputFile, const std::string inFile, std::vector<vertex> &Vertices) {
-    inputFile.open(inFile);
+    /*inputFile.open(inFile);
 
     if(!inputFile.is_open()) {
         // Report error and return if file failed to open
         std::cout << "Could not open file" << std::endl;
         exit(EXIT_FAILURE);
-    }
+    }*/
 
     std::string fileLine;		                    // holds string representation of array
     const char delimiter[] = " ";
@@ -78,5 +99,24 @@ void Graph::parseArray(std::ifstream &inputFile, const std::string inFile, std::
         Vertices.push_back({nodeNum, nodeX, nodeY});
 
         delete myToken;
+    }
+}
+
+void Graph::distMatrix(std::vector<std::vector<int>> &Distances, std::vector<vertex> &Vertices) {
+    int distance = 0;
+    double calcDist;
+
+    for (unsigned long row = 0; row < Vertices.size(); row++) {
+        for (unsigned long col = 0; col <= row; col++) {
+            if (col == row) {
+                Distances[row][col] = 0;
+                break;
+            }
+
+            calcDist = floor(sqrt(pow((Vertices[row].xcoor - Vertices[col].xcoor), 2.0)
+                                   + pow((Vertices[row].ycoor - Vertices[col].ycoor), 2.0)) + 0.5);
+            distance = static_cast<int>(calcDist);
+            Distances[row][col] = distance;
+        }
     }
 }

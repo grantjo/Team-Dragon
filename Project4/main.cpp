@@ -30,7 +30,13 @@
 
 #include "graph.h"
 
-int main() {
-    std::cout << "Hello, World!" << std::endl;
+int main(int argc, char** argv) {
+    if (argc < 2) {
+        std::cout << "Expected inputfile name in arg1" << std::endl;
+        return 1;
+    }
+    std::string inputFileName = argv[1];
+
+    Graph graph(inputFileName);
     return 0;
 }
