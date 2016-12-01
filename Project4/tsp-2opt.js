@@ -29,8 +29,6 @@
 **************************************************************************************/
 var fs = require("fs");
 
-var candidateListSize = 20;
-var mutationRate = 0.015;
 var locationList = [];
 
 locationList.clone = function() {
@@ -43,7 +41,7 @@ locationList.clone = function() {
 	return new_array;
 }
 
-if (process.argv.length < 5) {
+if (process.argv.length < 4) {
     console.log("Arguments Needed: input file, size of population, number of generations");
     process.exit(1);
 }
@@ -107,6 +105,20 @@ ind_tour.prototype.getDistance = function() {
     return this.dist;
 };
 
+ind_tour.prototype.clone_region_forward = function(new_tour, start, end) {
+	for (var i = start; i <= end; i++) {
+		new_tour.route[i] = new location(this.route[i].name, this.route[i].x, this.route[i].y);
+	}
+}
+
+ind_tour.prototype.clone_region_reverse = function(new_tour, start, end) {
+	var j = start;
+	for (var i = end; i >= start; i--) {
+		new_tour.route[j] = new location(this.route[i].name, this.route[i].x, this.route[i].y);
+		j++;
+	}
+}
+
 //Shuffle function using  Fisher-Yates (aka Knuth) Shuffle from
 // http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
 ind_tour.prototype.shuffle = function() {
@@ -166,96 +178,42 @@ population.prototype.getFittest = function() {
 };
 
 
-
-function evolve(pop){
-    var new_pop = new population(pop.tourList.length, 0);
-
-    new_pop.tourList[0] = pop.getFittest();
-
-    for (var i = 1; i < new_pop.tourList.length; i++) {
-
-        var mom = crossoverCandidate(pop);
-        var dad = crossoverCandidate(pop);
-
-        var child = crossover(mom, dad);
-
-        new_pop.tourList[i] = child;
-    }
-
-
-    for (var i = 1; i < new_pop.tourList.length; i++) {
-        mutate(new_pop.tourList[i]);
-    }
-
-    return new_pop;
+function two_opt(start_tour){
+	
+	var count = 0;
+    do {
+		var best_distance = start_tour.getDistance();
+		var break_out = false;
+		for (var i = 0; i < start_tour.route.length - 1; i++) {
+			for (var k = i + 1; k < start_tour.route.length; k++) {
+				var new_tour = two_opt_swap(start_tour, i, k);
+                var new_distance = new_tour.getDistance();
+				if (new_distance < best_distance) {
+                   start_tour = new_tour;
+                   break_out = true;
+               } 
+			}
+			if (break_out == true)
+				break;
+		}
+		count++;
+	} while (count < 25);
+	
+	return start_tour;
 }
 
-function crossover(mom, dad) {
-    var child = new ind_tour(mom.route.length);
-    var start = Math.round(Math.random() * mom.route.length) % mom.route.length;
-    var end = Math.round(Math.random() * mom.route.length) % mom.route.length;
-    var count = 0;
-    // add the locations between random indices start and end
-    // from mom into child in order.
-    for (var i = 0; i < child.route.length; i++) {
-        // copy from mom to child between start and end
-        if (start <= end && i >= start && i <= end) {
-            child.route[i] = mom.route[i];
-        }
-        // copy from mom to child between end and start
-        else if(start > end ) {
-            var temp = start;
-            start = end;
-            end = temp;
-            if (i >= start && i <= end) {
-                child.route[i] = mom.route[i];
-            }
-        }
-    }
-
-    // add in locations in dad that were not taken from mom
-    for ( var i = 0; i < dad.route.length; i++) {
-        if (!(child.contains(dad.route[i].name))) {
-            //find place in child to place dad's city
-            for (var j = 0; j < child.route.length; j++) {
-                if (child.route[j] == null) {
-                    child.route[j] = dad.route[i];
-                    count++;
-                    break;
-                }
-            }
-        }
-    }
-
-    return child;
-
-}
-
-// randomly swap locations
-function mutate(individual){
-    for (var p1 = 0; p1 < individual.route.length; p1++) {
-        if (Math.random() < mutationRate) {
-            // get random second index for location
-            var p2 = Math.round(individual.route.length * Math.random()) % individual.route.length;
-            //swap
-            var temp = individual.route[p1];
-            individual.route[p1] = individual.route[p2];
-            individual.route[p2] = temp;
-        }
-    }
-}
-
-// Get a candidate for crossover from pop. This is the fittest of a random selection from pop
-function crossoverCandidate(pop) {
-    var candidatePop = new population(candidateListSize, 0);
-
-    for (var i = 0; i < candidateListSize; i++) {
-        var random = Math.round(pop.tourList.length * Math.random()) % pop.tourList.length;
-
-        candidatePop.tourList[i] = pop.tourList[random];
-    }
-
-    return candidatePop.getFittest();
+function two_opt_swap(tour, i, k) {
+    var new_tour = new ind_tour(tour.route.length);
+	tour.clone_region_forward(new_tour, 0, i-1);
+	tour.clone_region_reverse(new_tour, i, k);
+	tour.clone_region_forward(new_tour, k+1, tour.route.length-1);
+	/*for (var j = 0; j < i; j++) 
+		new_tour.route[j] = tour.route[j];
+	for (var j = k; j >= i; j--)
+		new_tour.route[j] = tour.route[j];
+	for (var j = k + 1; j < tour.route.length; j++)
+		new_tour.route[j] = tour.route[j];*/
+	return new_tour;
 }
 
 
@@ -322,16 +280,14 @@ function main() {
 
     console.log("initial distance: " + pop.getFittest().getDistance());
 
-    for (var i = 0; i < process.argv[4]; i++) {
-        //console.log(pop.tourList);
-        pop = evolve(pop);
-		process.stdout.write("\rCompleted Generation " + (i+1) + " of " + process.argv[4]);
+    for (var i = 0; i < pop.tourList.length; i++) {
+        pop.tourList[i] = two_opt(pop.tourList[i]);
+		process.stdout.write("\r2-OPT on individual " + (i+1) + " of " + pop.tourList.length);
     }
 	console.log();
 	
     var best = pop.getFittest();
 
-    console.log("Finished " + process.argv[4] + " generations");
     console.log("Final Distance: " + best.getDistance());
 	
 	var buffer = best.getDistance().toString();
