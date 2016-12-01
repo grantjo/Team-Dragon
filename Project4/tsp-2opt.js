@@ -29,8 +29,6 @@
 **************************************************************************************/
 var fs = require("fs");
 
-var candidateListSize = 20;
-var mutationRate = 0.015;
 var locationList = [];
 
 locationList.clone = function() {
@@ -114,8 +112,10 @@ ind_tour.prototype.clone_region_forward = function(new_tour, start, end) {
 }
 
 ind_tour.prototype.clone_region_reverse = function(new_tour, start, end) {
+	var j = start;
 	for (var i = end; i >= start; i--) {
-		new_tour.route[i] = new location(this.route[i].name, this.route[i].x, this.route[i].y);
+		new_tour.route[j] = new location(this.route[i].name, this.route[i].x, this.route[i].y);
+		j++;
 	}
 }
 
@@ -180,33 +180,39 @@ population.prototype.getFittest = function() {
 
 function two_opt(start_tour){
 	
-	var change = -1;
+	var count = 0;
     do {
 		var best_distance = start_tour.getDistance();
 		var break_out = false;
 		for (var i = 0; i < start_tour.route.length - 1; i++) {
-			for (var k = i + 1; k < start_tour.length; k++) {
-				
+			for (var k = i + 1; k < start_tour.route.length; k++) {
 				var new_tour = two_opt_swap(start_tour, i, k);
                 var new_distance = new_tour.getDistance();
 				if (new_distance < best_distance) {
                    start_tour = new_tour;
                    break_out = true;
-				   change = new_distance - best_distance;
-				   
                } 
 			}
 			if (break_out == true)
 				break;
 		}
-	} while (change < 0);
+		count++;
+	} while (count < 25);
+	
+	return start_tour;
 }
 
 function two_opt_swap(tour, i, k) {
-    var new_tour = new ind_tour();
+    var new_tour = new ind_tour(tour.route.length);
 	tour.clone_region_forward(new_tour, 0, i-1);
 	tour.clone_region_reverse(new_tour, i, k);
 	tour.clone_region_forward(new_tour, k+1, tour.route.length-1);
+	/*for (var j = 0; j < i; j++) 
+		new_tour.route[j] = tour.route[j];
+	for (var j = k; j >= i; j--)
+		new_tour.route[j] = tour.route[j];
+	for (var j = k + 1; j < tour.route.length; j++)
+		new_tour.route[j] = tour.route[j];*/
 	return new_tour;
 }
 
@@ -276,12 +282,12 @@ function main() {
 
     for (var i = 0; i < pop.tourList.length; i++) {
         pop.tourList[i] = two_opt(pop.tourList[i]);
-		console.log("2-OPT on individual " + i + " of " + pop.tourList.length);
+		process.stdout.write("\r2-OPT on individual " + (i+1) + " of " + pop.tourList.length);
     }
+	console.log();
 	
     var best = pop.getFittest();
 
-    console.log("Finished " + process.argv[4] + " generations");
     console.log("Final Distance: " + best.getDistance());
 	
 	var buffer = best.getDistance().toString();
