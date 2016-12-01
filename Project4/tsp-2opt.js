@@ -41,7 +41,7 @@ locationList.clone = function() {
 	return new_array;
 }
 
-if (process.argv.length < 4) {
+if (process.argv.length < 5) {
     console.log("Arguments Needed: input file, size of population, number of generations");
     process.exit(1);
 }
@@ -197,7 +197,7 @@ function two_opt(start_tour){
 				break;
 		}
 		count++;
-	} while (count < 25);
+	} while (count < process.argv[4]);
 	
 	return start_tour;
 }
@@ -280,14 +280,14 @@ function main() {
 
     console.log("initial distance: " + pop.getFittest().getDistance());
 
-    for (var i = 0; i < pop.tourList.length; i++) {
-        pop.tourList[i] = two_opt(pop.tourList[i]);
-		process.stdout.write("\r2-OPT on individual " + (i+1) + " of " + pop.tourList.length);
-    }
-	console.log();
+    //for (var i = 0; i < pop.tourList.length; i++) {
+        //pop.tourList[i] = two_opt(pop.tourList[i]);
+		//process.stdout.write("\r2-OPT on individual " + (i+1) + " of " + pop.tourList.length);
+   // }
+	//console.log();
 	
     var best = pop.getFittest();
-
+    best = two_opt(best);
     console.log("Final Distance: " + best.getDistance());
 	
 	var buffer = best.getDistance().toString();
