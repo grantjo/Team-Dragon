@@ -341,7 +341,7 @@ function main() {
         console.log(best.route[i].name);
 		buffer += "\n" + best.route[i].name;
 	}
-	
+	buffer += "\n";
 	//buffer = Buffer.from(buffer, 'utf8');
 
 	fs.open(process.argv[2] + ".tour", 'w', function(err, fd) {
