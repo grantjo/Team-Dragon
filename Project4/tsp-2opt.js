@@ -196,8 +196,10 @@ function two_opt(start_tour){
 			if (break_out == true)
 				break;
 		}
+    process.stdout.write("\rCompleted 2-Opt Round " + (count+1) + " of " + process.argv[4]);
 		count++;
 	} while (count < process.argv[4]);
+  console.log();
 	
 	return start_tour;
 }
@@ -207,12 +209,6 @@ function two_opt_swap(tour, i, k) {
 	tour.clone_region_forward(new_tour, 0, i-1);
 	tour.clone_region_reverse(new_tour, i, k);
 	tour.clone_region_forward(new_tour, k+1, tour.route.length-1);
-	/*for (var j = 0; j < i; j++) 
-		new_tour.route[j] = tour.route[j];
-	for (var j = k; j >= i; j--)
-		new_tour.route[j] = tour.route[j];
-	for (var j = k + 1; j < tour.route.length; j++)
-		new_tour.route[j] = tour.route[j];*/
 	return new_tour;
 }
 
@@ -277,15 +273,8 @@ function main() {
 // create population to start
     var pop = new population(process.argv[3], 2);
 
-
     console.log("initial distance: " + pop.getFittest().getDistance());
 
-    //for (var i = 0; i < pop.tourList.length; i++) {
-        //pop.tourList[i] = two_opt(pop.tourList[i]);
-		//process.stdout.write("\r2-OPT on individual " + (i+1) + " of " + pop.tourList.length);
-   // }
-	//console.log();
-	
     var best = pop.getFittest();
     best = two_opt(best);
     console.log("Final Distance: " + best.getDistance());
