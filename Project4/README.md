@@ -4,7 +4,7 @@
 ### CS 325 Project 4: The Travelling Salesman Problem (TSP)
 Authors: Mel Drews, Jordan Grant, Adrian Buenavista
 
-There are 2 algorithms implemented in thie project.
+There are 2 algorithms implemented in this project.
 
 1) Nearest Neighbor with Genetic Algorithm Improvement
 2) Nearest Neighbor with 2-Opt Improvement
@@ -32,8 +32,6 @@ population size = 500
 number of 2 Opt Iterations  = 3000
 
 
-* while each program is running feedback on progress will be reported to the
+* while each program is running, feedback on progress will be reported to the
   console. At the end of the programs a new file will be created with the
-generated solution named:
-
-[inputFile].tour
+generated solution as per assignment specifications and named: [inputFile].tour
